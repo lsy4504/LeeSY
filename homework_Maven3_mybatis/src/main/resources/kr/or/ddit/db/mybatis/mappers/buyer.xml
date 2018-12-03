@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.buyer.dao.IBuyerDAO">
+<sql id="selectBuyerFrag">
+		SELECT
+		*
+		FROM BUYER
+	</sql>
+	<select id="selectBuyer" parameterType="String" resultType="buyerVO">
+		<include refid="selectBuyerFrag" />
+		WHERE Buyer_ID= #{asd}
+	</select>
+	<select id="selectTotalRecord" resultType="long">
+		SELECT COUNT(*)
+		FROM
+		BUYER
+	</select>
+	
+
+	<select id="selectBuyerList" resultType="buyerVO" parameterType="pagingVO">
+		select B.*
+		FROM(
+		SELECT ROWNUM RNUM, A.*
+		FROM (
+
+		<include refid="selectBuyerFrag" />
+		ORDER BY ROWID DESC) A )B
+	    			<![CDATA[
+	    			WHERE RNUM>=#{startRow} AND RNUM<=#{endRow}
+	    			]]>
+	</select>
+	<insert id="insertBuyer" parameterType="buyerVO">
+		<selectKey keyProperty="buyer_id" order="BEFORE" resultType="String">
+		SELECT #{buyer_lgu}||lpad(nvl(to_number(substr(MAX(buyer_id),5)),0)+1,2,'0')
+		FROM buyer
+		 WHERE buyer_lgu=#{buyer_lgu}
+		</selectKey>
+		 INSERT INTO buyer (
+		    BUYER_ID,BUYER_NAME,BUYER_LGU,BUYER_BANK,
+		    BUYER_BANKNO,BUYER_BANKNAME, BUYER_ZIP,BUYER_ADD1,
+		    BUYER_ADD2,BUYER_COMTEL,BUYER_FAX,BUYER_MAIL,
+		    BUYER_CHARGER
+		) VALUES (
+		#{buyer_id},#{buyer_name},#{buyer_lgu},#{buyer_bank}
+		,#{buyer_bankno},#{buyer_bankname},#{buyer_zip},#{buyer_add1}
+		,#{buyer_add2},#{buyer_comtel},#{buyer_fax},#{buyer_mail},
+		#{buyer_charger}
+		    
+		)
+
+	
+	</insert>
+	<update id="updateBuyer" parameterType="buyerVO">
+		update buyer set
+		BUYER_NAME=#{buyer_name},
+		BUYER_BANK=#{buyer_bank},
+		BUYER_BANKNO=#{buyer_bankno},
+		BUYER_BANKNAME=#{buyer_bankname},
+		BUYER_ZIP=#{buyer_zip},
+		BUYER_ADD1=#{buyer_add1},
+		BUYER_ADD2=#{buyer_add2},
+		BUYER_COMTEL=#{buyer_comtel},
+		BUYER_FAX=#{buyer_fax},
+		BUYER_MAIL=#{buyer_mail},
+		BUYER_CHARGER=#{buyer_charger}
+		where BUYER_ID=#{buyer_id}
+
+
+	</update>
+	
+	<delete id="deleteBuyer" parameterType="String">
+		UPDATE BUYER SET BUYER_DELETE='Y'
+		where BUYER_ID=#{asd}
+	</delete>
+
+</mapper>

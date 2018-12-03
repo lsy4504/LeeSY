@@ -1,0 +1,21 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    <script type="text/javascript">
+    	function goIndex(commend) {
+			var form=document.leftForm;
+			form.commend.value=commend;
+			form.submit();
+		}
+    
+    </script>
+
+	<ul>
+		<li ><a href="javascript:goIndex('gugudan');">구구단</a></li>
+		<li><a href="javascript:goIndex('lurics');">가사파일</a></li>
+		<li><a href="javascript:goIndex('calender');">달력</a></li>
+		<li><a href="javascript:goIndex('image');">이미지뷰어</a></li>
+	
+	</ul>
+<form  name="leftForm" action="<%= request.getContextPath() %>/" method="post">
+	<input name="commend" value="" type="hidden"/>
+</form>
