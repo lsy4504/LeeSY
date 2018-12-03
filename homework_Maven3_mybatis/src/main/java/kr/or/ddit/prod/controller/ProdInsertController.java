@@ -50,6 +50,7 @@ public class ProdInsertController implements ICommandHandler {
 	private String doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException{
 		ProdVO prod= new ProdVO();
 		Map<String, String> errors=new HashMap<>();
+		
 		try {
 			BeanUtils.populate(prod, req.getParameterMap());
 		} catch (Exception e) {

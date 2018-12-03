@@ -24,6 +24,7 @@ public class FirstFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		//1.기본적으로 필터는 chain.doFilter 전에는 요청 // doFilter메소드가 실행후 응답 
 		logger.info("요청 필터링...");
 		chain.doFilter(request, response);//다음 필터나 최종 자원 쪽으로 제어가 이동함
 		logger.info("응답 필터링...");
