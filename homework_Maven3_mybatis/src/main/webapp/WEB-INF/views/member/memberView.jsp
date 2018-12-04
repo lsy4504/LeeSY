@@ -18,6 +18,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<style type="text/css">
+	#imageArea{
+		float: right;
+		width: 200px;
+		height: 300px;
+		border: 1px solid black;  
+		
+	}
+	#imageArea>img{
+		width: 100%;
+		height: 100%;
+	}
+</style>
 <title>Insert title here</title>
 <script type="text/javascript">
 $( function() {
@@ -41,6 +55,23 @@ $( function() {
     		}
     		
     	}
+    });
+    var imgArea=$("#imageArea");
+    $('[name="mem_image"]').on("change",function(){
+    	var files =$(this).prop("files");
+    	if(!files) return;
+    	for(var idx=0;idx<files.length; idx++){
+//     		console.log(files[idx]);
+			var reader= new FileReader();
+			reader.onloadend=function(event){
+// 				console.log(event.target.result);
+				var imgTag=new Image();
+				imgTag.src=event.target.result;
+				imgArea.html(imgTag);
+			}
+			reader.readAsDataURL(files[idx]);
+    	}
+    		
     })
   } );
 	
@@ -64,7 +95,8 @@ $( function() {
 	<input type="hidden" name="mem_pass"  value=""/>
 </form>
 </c:if>
-<form action="${pageContext.request.contextPath }/member/memberUpdate.do" method="post">
+<form action="${pageContext.request.contextPath }/member/memberUpdate.do" method="post"
+	enctype="multipart/form-data">
 	<table>
 		
 		<tr>
@@ -81,6 +113,18 @@ $( function() {
 			<th>회원명</th>
 			<td><input type="text" name="mem_name" 
 				value="${member.mem_name }" /><span class="error">${errors["mem_name"]}</span></td>
+		</tr>
+		<tr>
+			<th>이미지</th>
+			<td>
+			<div id="imageArea">
+			<c:if test="${not empty member.mem_img}">
+			<img src="data:image/*;base64,${member.mem_imgToBase64 }"/>
+			</c:if>
+			</div>
+				<input type="file" name="mem_image" accept="image/*" > 
+			</td>
+			
 		</tr>
 		<tr>
 			<th>주민번호1</th>
@@ -165,7 +209,8 @@ $( function() {
 			<input type="button" value="뒤로가기" onclick="history.back();"/> 
 			<c:if test="${mutable }">
 	
-			<input type="submit" value="수정"/> 
+			<input type="submit" value="수정" 
+			/> 
 			<input type="reset" value="리셋"/> 
 			<input type="button" value="탈퇴하기" id="delBtn" />
 			</c:if>

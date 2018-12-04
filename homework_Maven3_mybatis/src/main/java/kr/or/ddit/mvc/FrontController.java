@@ -43,7 +43,6 @@ public class FrontController extends HttpServlet {
 	}
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
 //		1.요청과의 매핑 
 //		--web xml에 추가해줘서 작업 종료
 //		2.요청 분석(주소)

@@ -51,7 +51,7 @@ public class FileUploadReaquestWrapper extends HttpServletRequestWrapper {
 				ServletFileUpload handler= new ServletFileUpload(fileItemFactory);//세팅된 파일 정보를 ServletFileUpload
 				//객체에 담아줌 즉 여기서는 크기와 경로를 담아줌
 				//3. 핸들러 객체를 이용해 현재 요청 파싱ㅁ(Part->FileItem)
-				req.setCharacterEncoding("UTF-8");//한글이 포함된 파일이 올수도 있으니까 인코딩
+//				req.setCharacterEncoding("UTF-8");//한글이 포함된 파일이 올수도 있으니까 인코딩
 				try {
 					List<FileItem> fileItems= handler.parseRequest(req);//req즉 요청받은 파라미터를 Fileitem으로 파싱해줌.
 					
@@ -61,10 +61,16 @@ public class FileUploadReaquestWrapper extends HttpServletRequestWrapper {
 							String partname=item.getFieldName();//파라미터명
 							if(item.isFormField()) {//파트에 담긴 input태그의 타입이 file이면 펄스, 아니면 트루
 								//5. 일반 문자열 기반의 FileItem 에대 한 처리와
-								String parameterValue=item.getString("UTF-8");//인코딩 방식 담아주기
+								String parameterValue=null;
+								if(req.getCharacterEncoding()!=null) {
+									
+									parameterValue=item.getString(req.getCharacterEncoding());//인코딩 방식 담아주기
+								}else {
+									parameterValue=item.getString();
+								}
 								String[] alreadyValues=parameterMap.get(partname);//파리미터 맵에 담긴 값을 가지고와서 스트링배열에 저장
 								String[] values=null;
-								if(alreadyValues==null) {//1회 반복일 경우 null이므로 무조건 들어옴
+								if(alreadyValues==null) {
 									values=new String[1];//즉 values의 배열 생성 크기는 1
 								}else {//2회차부터 들어옴~
 									values=new String[alreadyValues.length+1];
@@ -166,5 +172,5 @@ public class FileUploadReaquestWrapper extends HttpServletRequestWrapper {
 				tmp.delete();
 			}
 		}
-	}//삭ㅈ데부분
+}//삭ㅈ데부분
 }

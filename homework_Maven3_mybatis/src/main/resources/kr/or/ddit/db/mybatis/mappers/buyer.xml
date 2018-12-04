@@ -3,9 +3,14 @@
 <mapper namespace="kr.or.ddit.buyer.dao.IBuyerDAO">
 <sql id="selectBuyerFrag">
 		SELECT
-		*
+		buyer_id,buyer_name,buyer_lgu,buyer_bank,
+	buyer_bankno,buyer_bankname,buyer_zip,buyer_add1,
+	buyer_add2,buyer_comtel,buyer_fax,buyer_mail,
+	buyer_charger,buyer_telext
+	
 		FROM BUYER
 	</sql>
+	
 	<select id="selectBuyer" parameterType="String" resultType="buyerVO">
 		<include refid="selectBuyerFrag" />
 		WHERE Buyer_ID= #{asd}
@@ -24,6 +29,21 @@
 		FROM (
 
 		<include refid="selectBuyerFrag" />
+		<where>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+			<if test="searchType.equals('buyer_name')" >
+					buyer_NAME like '%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('add1')">
+					buyer_ADD1 like '%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('all')">
+					buyer_NAME like '%'||#{searchWord}||'%'
+					OR
+					buyer_ADD1 like '%'||#{searchWord}||'%'
+				</if>
+		</if>
+		</where>
 		ORDER BY ROWID DESC) A )B
 	    			<![CDATA[
 	    			WHERE RNUM>=#{startRow} AND RNUM<=#{endRow}

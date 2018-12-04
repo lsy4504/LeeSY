@@ -15,10 +15,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
+import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.ICommandHandler;
@@ -43,6 +45,16 @@ public class MemberUpdateController implements ICommandHandler{
 		boolean valid= validate(member,errors);
 		System.err.println(errors.size());
 		if(valid){
+			if(req instanceof FileUploadReaquestWrapper ) {
+				//경로, 이름,
+				System.out.println("아니시밣 제발1");
+			FileItem fileItem=  ((FileUploadReaquestWrapper) req).getFileItem("mem_image");
+			System.out.println(fileItem.getSize());
+			if(fileItem!=null) {
+				member.setMem_img(fileItem.get()); 
+				System.out.println("아니시밣 제발");
+			}
+			}
 			ServiceResult result=serivce.modifyMember(member);
 			switch(result){
 			case PKDUPLICATED:

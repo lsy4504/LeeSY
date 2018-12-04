@@ -21,6 +21,9 @@ public class BuyerListController implements ICommandHandler {
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		int currentPage=1;
 		String page=req.getParameter("page");
+		String searchWord=req.getParameter("searchWord");
+		String searchType=req.getParameter("searchType");
+		
 		String view="buyer/buyerList";
 		if(StringUtils.isNumeric(page)) {
 			currentPage=Integer.parseInt(page);
@@ -31,6 +34,8 @@ public class BuyerListController implements ICommandHandler {
 		pagingInfoVO.setCurrentPage(currentPage);
 		long totalRecord=service.retribeBuyerCount(pagingInfoVO);
 		pagingInfoVO.setTotalRecord(totalRecord);
+		pagingInfoVO.setSearchWord(searchWord);
+		pagingInfoVO.setSearchType(searchType);
 		pagingInfoVO.setDataList(service.retrieveBuyerList(pagingInfoVO));
 		req.setAttribute("pagingInfoVO", pagingInfoVO);
 		return view;

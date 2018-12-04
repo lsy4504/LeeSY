@@ -59,7 +59,15 @@
 <body>
 	<h4>회원 목록</h4>
 	<form name='searchForm'>
-			<input type="hidden" name="page" /> 
+			<input type="hidden" name="page" />
+			<select name="searchType">
+				<option value="buyer_name">판매처명</option>
+				<option value="buyer_add1">지역</option>
+			</select>
+			<input type="text" name="searchWord" />
+			
+			<input type="submit" value="검색"> 
+			 
 		</form>
 <input type="button" class="button" value="신규등록"
 	onclick="location.href='${pageContext.request.contextPath }/buyer/buyerInsert.do'"
