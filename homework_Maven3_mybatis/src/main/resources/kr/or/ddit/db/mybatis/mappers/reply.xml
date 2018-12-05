@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.board.dao.IReplyDAO"></mapper>
+<mapper namespace="kr.or.ddit.board.dao.IReplyDAO">
+	<select id="selectTotalRecord" parameterType="pagingVO" resultType="Long">
+		Select Count(*)
+		from reply
+		where BO_NO=#{searchVO.bo_no}
+	
+	</select>
+	<select id="selectReplyList" parameterType="pagingVO" resultType="replyVO">
+		select B.*
+		from(
+		select a.*,rownum rowno
+		from(
+		select bo_no, rep_no,rep_writer,rep_ip,rep_content, rep_date
+		from reply
+		where BO_NO=#{searchVO.bo_no}
+		order by rep_no desc)A)B
+		where rowno between #{startRow} and #{endRow}
+		
+	</select>	
+
+</mapper>

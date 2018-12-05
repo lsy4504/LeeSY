@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<!DOCTYPE html>
+<html>
+<link href="<%=request.getContextPath() %>/css/board.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">	
+  <script src="${pageContext.request.contextPath }/js/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script> 
+ 
+    <script type="text/javascript"> 
+		
+ 	function ${pagingVO.funcName }(page){
+  		$("[name='searchForm']").find("[name='page']").val(page);
+// 		document.searchForm.page.value=page;
+		$("[name='searchForm']").submit();
+  	}
+ 	$(function() {
+        // wait for the DOM to be loaded 
+        $(document).ready(function() { 
+            $('#searchForm').ajaxForm(function() { 
+            	var options={
+            			dataType:	'JSON',
+            			target:        '#output1',   // target element(s) to be updated with server response 
+            	        beforeSubmit:  showRequest,  // pre-submit callback 
+            	        success:       showResponse  // post-submit callback 
+            	};
+            	  $('#searchForm').ajaxForm(options); 
+            }); 
+        });
+        function showRequest(formData, jqForm, options) { 
+            // formData is an array; here we use $.param to convert it to a string to display it 
+            // but the form plugin does this for you automatically when it submits the data 
+            var queryString = $.param(formData); 
+         
+            // jqForm is a jQuery object encapsulating the form element.  To access the 
+            // DOM element for the form do this: 
+            // var formElement = jqForm[0]; 
+         
+            alert('About to submit: \n\n' + queryString); 
+         
+            // here we could return false to prevent the form from being submitted; 
+            // returning anything other than false will allow the form submit to continue 
+            return true; 
+        } 
+         
+        // post-submit callback 
+        function showResponse(resp, statusText, xhr, $form)  { 
+            // for normal html responses, the first argument to the success callback 
+            // is the XMLHttpRequest object's responseText property 
+         
+            // if the ajaxForm method was passed an Options Object with the dataType 
+            // property set to 'xml' then the first argument to the success callback 
+            // is the XMLHttpRequest object's responseXML property 
+         
+            // if the ajaxForm method was passed an Options Object with the dataType 
+            // property set to 'json' then the first argument to the success callback 
+            // is the json data object returned by the server 
+         
+          var tag="<tr>";
+			var pattern="<td>%V</td>"
+			$.each(resp.dataList,function(idx,p){
+				tag+=pattern.replace("%V",p.rowNo);
+				tag+=pattern.replace("%V",p.bo_no);
+				tag+=pattern.replace("%V",p.bo_title);
+				tag+=pattern.replace("%V",p.board_writer);
+				tag+=pattern.replace("%V",p.bo_date);
+				tag+=pattern.replace("%V",p.bo_hit);
+				tag+=pattern.replace("%V",p.bo_rcmd);
+			tag+="</tr>";
+			});
+			$("#output1").html(tag );
+			$("#page2").html(resp.pagingHTML);
+			$("[name='page']").val(" "); 
+        } 
+        $("#output1").on("click","tr",function(){
+        	var what=$(this).find("td:nth-child(2)").text();
+        	location.href='<c:url value="/board/boardView.do?what=" ></c:url>'+what
+        	alert(what)
+        })
+  });
+    </script>
+  	
+  
+<head>
+<meta charset="UTF-8">
+</head>
+
+<title>Insert title here</title>
+</head>
+
+  
+  
+<body>
+	<table>
+		<thead>
+		<tr>
+			<th>순번</th>
+			<th>글번호</th>
+			<th>제목</th>
+			<th>작성자</th>
+			<th>작성일</th>
+			<th>조회수</th>
+			<th>추천인</th>
+		</tr>	
+		</thead>
+		<tbody id="output1">
+		
+		<c:forEach items="${pagingVO.dataList }" var="board">
+			<tr>
+				<td>${board.rowNo}</td>	
+				<td>${board.bo_no}</td>	
+				<td>${board.bo_title}</td>	
+				<td>${board.board_writer}</td>	
+				<td>${board.bo_date}</td>	
+				<td>${board.bo_hit}</td>	
+				<td>${board.bo_rcmd}</td>	
+			</tr>
+		
+		</c:forEach>
+		
+		</tbody>
+		<tfoot>
+		<tr>
+		<td colspan="7">
+		<nav aria-label="Page navigation example" id='page2'>
+			${pagingVO.pagingHTML }
+			</nav>
+			</td>
+			</tr>
+		</tfoot>
+	</table>
+	<form id="searchForm" action="" method="post" name="searchForm"> 
+		<input type="hidden" name="page">
+		<select name="searchType">
+			<option value="all">전체</option>
+			<option value="writer">작성자</option>
+			<option value="title">제목</option>
+		</select>
+		<script type="text/javascript">
+						document.searchForm.searchType.value = "${empty pagingVO.searchType? 'all':pagingVO.searchType}";
+					</script>
+		<input type="text" name="searchWord" value="${pagingVO.searchWord }"/>
+		<input type="submit" value="검색">
+	</form>
+
+</body>
+</html>

@@ -1,4 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.board.dao.IBoardDAO">
+	<select id="selectTotalRecord" resultType="long"
+		parameterType="pagingVO">
+		select count(*)
+		from board
+		<include refid="search" />
+	</select>
+	<sql id="search">
+		<where>
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+				<if test="searchType.equals('writer')">
+					board_writer like
+					'%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('title')">
+					bo_title like '%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('all')">
+					board_writer like '%'||#{searchWord}||'%'
+					OR
+					bo_title like
+					'%'||#{searchWord}||'%'
+				</if>
+			</if>
+		</where>
+	</sql>
+	<select id="selectBoardList" resultType="boardVO"
+		parameterType="pagingVO">
+		SELECT b.*
+		from(
+		SELECT ROWNUM rowno,A.*
+		FROM (SELECT *
+		FROM
+		board
+		<include refid="search" />
+		ORDER BY bo_no DESC )A)b
+		where b.rowno between #{startRow} and
+		#{endRow}
+	</select>
+	<resultMap type="boardVO" id="boardMap" autoMapping="true">
+		<id column="BO_NO" property="bo_no" />
+		<collection property="replyList" autoMapping="true"
+			ofType="replyVO" javaType="java.util.List" />
+	</resultMap>
+	<select id="selectBoard" parameterType="Long"
+		resultMap="boardMap">
+		
+		select bo_no,board_writer,bo_pass,
+		bo_ip,bo_mail,bo_title,
+		bo_content,bo_date,bo_hit,bo_rcmd
+		
+		FROM board 
+		where bo_no=#{bo_no}
+
+		
+
+	</select>
+	<update id="incrementHit" parameterType="Long">
+		update board set
+		bo_hit=bo_hit+1 where bo_no=#{data}
+
+	</update>
+
 </mapper>

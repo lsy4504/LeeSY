@@ -43,7 +43,7 @@
 		%>
 		${empty testAttr }, ${empty testList }
 		5)삼항연산자: 조건식? 참표현:거짓표현
-		${empty testList? "컬렉션 비어있어":"가득참" }
+		${empty testList? "컬렉션 비어있어":"가득참"}
 		
 	3.자바객체의 메소드에 대한 접근 방법 제공(since EL 2.2 version)
 		<% 
@@ -51,7 +51,6 @@
 			pageContext.setAttribute("member", member);
 			member.setMem_add1("대정");
 			member.setMem_add2("개발원");
-			
 		%>
 		${member.getMem_id()},${member.mem_id } <!-- 변수명이아닌 겟메서드명을 가지고옴 -->
 		${member.getAddress() },${member.address }

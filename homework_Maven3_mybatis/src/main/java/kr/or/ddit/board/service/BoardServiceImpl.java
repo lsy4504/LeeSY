@@ -2,6 +2,7 @@ package kr.or.ddit.board.service;
 
 import java.util.List;
 
+import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.dao.BoardDAOImpl;
 import kr.or.ddit.board.dao.IBoardDAO;
@@ -23,20 +24,25 @@ public class BoardServiceImpl implements IBoardService {
 
 	@Override
 	public long retriveBoardCount(PagingInfoVO<BoardVO> pagingVO) {
-		// TODO Auto-generated method stub
-		return 0;
+		return boardDAO.selectTotalRecord(pagingVO);
 	}
 
 	@Override
 	public List<BoardVO> retriveBoardList(PagingInfoVO<BoardVO> pagingVO) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return boardDAO.selectBoardList(pagingVO);
 	}
 
 	@Override
 	public BoardVO retriveBoard(long bo_no) {
-		// TODO Auto-generated method stub
-		return null;
+		BoardVO board= boardDAO.selectBoard(bo_no);
+		if(board==null) {
+			throw new CommonException("Board 에러..");
+		}
+		boardDAO.incrementHit(bo_no);
+		board.setBo_hit(board.getBo_hit()+1);
+		
+		return board;
 	}
 
 	@Override

@@ -9,8 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
-@Alias("boadVO")
+@Alias("boardVO")
 public class BoardVO implements Serializable {
+	private Long rowNo;
 	private Long bo_no;
 	private String board_writer;
 	private String bo_pass;
@@ -22,5 +23,5 @@ public class BoardVO implements Serializable {
 	private Long bo_hit;
 	private Long bo_rcmd;
 	private List<PdsVO> pdsList;
-	private List<ReplyVO> repltList;
+	private List<ReplyVO> replyList;
 }
