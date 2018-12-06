@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.board.service.IReplyService;
-import kr.or.ddit.board.service.ReplayServiceImpl;
+import kr.or.ddit.board.service.ReplyServiceImpl;
 import kr.or.ddit.mvc.ICommandHandler;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PagingInfoVO;
@@ -44,12 +44,13 @@ public class BoardViewController implements ICommandHandler{
 			goPage="board/boardView";
 			PagingInfoVO<ReplyVO> pagingVO=new PagingInfoVO<>();
 			pagingVO.setCurrentPage(1);
-			IReplyService replyService=new ReplayServiceImpl();
+			IReplyService replyService=new ReplyServiceImpl();
 			ReplyVO searchVO=new ReplyVO();
 			searchVO.setBo_no(bo_no);
 			pagingVO.setSearchVO(searchVO);
 			long totalRecored=replyService.retriveReplyCount(pagingVO);
 			pagingVO.setTotalRecord(totalRecored);
+			pagingVO.setDataList(replyService.retriveReplyList(pagingVO));
 			req.setAttribute("pagingVO", pagingVO);
 			return goPage;
 		}

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.board.service.IReplyService;
-import kr.or.ddit.board.service.ReplayServiceImpl;
+import kr.or.ddit.board.service.ReplyServiceImpl;
 import kr.or.ddit.mvc.ICommandHandler;
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ReplyVO;
@@ -34,7 +34,7 @@ public class ReplyListController implements ICommandHandler{
 		}
 		PagingInfoVO<ReplyVO> pagingVO=new PagingInfoVO<>();
 		pagingVO.setCurrentPage(currentPage);
-		IReplyService replyService=new ReplayServiceImpl();
+		IReplyService replyService=new ReplyServiceImpl();
 		ReplyVO searchVO=new ReplyVO();
 		searchVO.setBo_no(Long.parseLong(bo_noStr));
 		pagingVO.setSearchVO(searchVO);

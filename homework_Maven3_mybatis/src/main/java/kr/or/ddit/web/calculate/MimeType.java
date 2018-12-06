@@ -14,6 +14,10 @@ public enum MimeType {
 	MimeType(String userMime){
 		this.mimeType=userMime;
 	}
+	
+	public String getMimeType() {
+		return mimeType;
+	}
 
 	public  MimeType getMimeType(String mime) {
 		for(MimeType mimeType:MimeType.values()) {
