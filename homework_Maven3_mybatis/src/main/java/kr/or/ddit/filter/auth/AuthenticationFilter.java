@@ -38,7 +38,7 @@ public class AuthenticationFilter implements Filter{
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		securedResources=new LinkedHashMap<>();
-		filterConfig.getServletContext().setAttribute(SECUREDRESURCEATTR,securedResources );
+		filterConfig.getServletContext().setAttribute(SECUREDRESURCEATTR,securedResources);
 		securedResourceInfo= filterConfig.getInitParameter("securedResourceInfo");
 		ResourceBundle bundle= ResourceBundle.getBundle(securedResourceInfo);
 		Enumeration<String> key= bundle.getKeys();

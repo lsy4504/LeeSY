@@ -86,7 +86,7 @@ $( function() {
 			<tr>
 				<th>주소2</th>
 				<td><input type="text" name="mem_add2"
-					value="${ member.mem_mem_add2}" /><span class="error">${errors["mem_add2"]}</span></td>
+					value="${ member.mem_add2}" /><span class="error">${errors["mem_add2"]}</span></td>
 			</tr>
 			<tr>
 				<th>집번</th>

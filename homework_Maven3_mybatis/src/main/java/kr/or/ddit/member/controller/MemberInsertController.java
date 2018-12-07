@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -25,6 +26,8 @@ import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.validator.GeneralValidator;
+import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.vo.MemberVO;
 public class MemberInsertController implements ICommandHandler{
 	@Override
@@ -59,9 +62,10 @@ public class MemberInsertController implements ICommandHandler{
 		
 		String message=null;
 		String gopage="member/memberForm";
-		Map<String,String> errors=new HashMap<>();
+		Map<String,List<CharSequence>> errors=new HashMap<>();
 		req.setAttribute("errors", errors);
-		boolean valid= validate(member,errors);
+		GeneralValidator validator=new GeneralValidator();
+		boolean valid= validator.validate(member, errors, InsertGroup.class);
 		System.err.println(errors.size());
 		if(valid){
 			

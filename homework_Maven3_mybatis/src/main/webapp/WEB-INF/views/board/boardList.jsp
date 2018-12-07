@@ -146,6 +146,8 @@
 					</script>
 		<input type="text" name="searchWord" value="${pagingVO.searchWord }"/>
 		<input type="submit" value="검색">
+		
+		<input type="button" value="글 작성" onclick="location.href='<c:url value='/board/boardInsert.do'/>'" >
 	</form>
 
 </body>

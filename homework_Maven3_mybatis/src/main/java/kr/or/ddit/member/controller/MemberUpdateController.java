@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -24,6 +25,8 @@ import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
 import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.validator.GeneralValidator;
+import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.MemberVO;
 public class MemberUpdateController implements ICommandHandler{
 	
@@ -40,9 +43,10 @@ public class MemberUpdateController implements ICommandHandler{
 		
 		String message=null;
 		String gopage="member/memberView";
-		Map<String,String> errors=new HashMap<>();
+		Map<String,List<CharSequence>> errors=new HashMap<>();
 		req.setAttribute("errors", errors);
-		boolean valid= validate(member,errors);
+		GeneralValidator validator= new GeneralValidator();
+		boolean valid= validator.validate(member, errors, UpdateGroup.class);
 		System.err.println(errors.size());
 		if(valid){
 			if(req instanceof FileUploadReaquestWrapper ) {
@@ -79,36 +83,5 @@ public class MemberUpdateController implements ICommandHandler{
 		return gopage;
 		
 	}
-	private boolean validate(MemberVO member, Map<String,String> errors){
-		boolean valid= true;
-		System.out.print("비번검증");
-		
-		//검증 룰..
-		if(StringUtils.isBlank(member.getMem_id())){
-		valid=false;
-		errors.put("mem_id", ">회원아이디 미입력 .... <");
-		}
-		if(StringUtils.isBlank(member.getMem_pass())){
-		valid=false;
-		System.out.print("비번검증");
-		errors.put("mem_pass", ">비밀번호 미입력 .... <");
-		}
-		if(StringUtils.isBlank(member.getMem_name())){
-		valid=false;
-		errors.put("mem_name", ">회원명 미입력 .... <");
-		}
-		if(StringUtils.isNotBlank(member.getMem_bir())){
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			//formatting : 특정타입의 데이터를 일정 형식의 문자열로 변환.
-			//parsing: 일정한 형식의 문자열을 특정 타입의 데이터로 변환.
-			try{
-			formatter.parse(member.getMem_bir());
-			}catch(ParseException e){
-				valid=false;
-				errors.put("mem_bir", ">날짜형식 확인<");
-			}
-		}
-		
-		return valid;
-	}
+
 }

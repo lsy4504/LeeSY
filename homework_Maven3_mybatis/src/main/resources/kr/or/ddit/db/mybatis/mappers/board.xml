@@ -42,18 +42,19 @@
 	</select>
 	<resultMap type="boardVO" id="boardMap" autoMapping="true">
 		<id column="BO_NO" property="bo_no" />
-		<collection property="replyList" autoMapping="true"
-			ofType="replyVO" javaType="java.util.List" />
+		<collection property="pdsList" ofType="pdsVO" javaType="java.util.List" autoMapping="true" />
+		
 	</resultMap>
 	<select id="selectBoard" parameterType="Long"
 		resultMap="boardMap">
 		
-		select bo_no,board_writer,bo_pass,
+		select board.bo_no,board_writer,bo_pass,
 		bo_ip,bo_mail,bo_title,
 		bo_content,bo_date,bo_hit,bo_rcmd
-		
-		FROM board 
-		where bo_no=#{bo_no}
+		,pds_no,pds_savename,pds_filename,pds_size,pds_fancysize
+		,pds_mime
+		FROM board left outer join pds on(board.bo_no=pds.bo_no )
+		where board.bo_no=#{bo_no}
 
 		
 
@@ -63,5 +64,25 @@
 		bo_hit=bo_hit+1 where bo_no=#{data}
 
 	</update>
+	<insert id="insertBoard" parameterType="boardVO">
+		<selectKey order="BEFORE" keyProperty="bo_no" resultType="Long">
+			select board_seq.NEXTVAL
+			from dual
+		</selectKey>
+		INSERT INTO board (
+	bo_no,board_writer,
+	bo_pass,bo_ip,
+	bo_mail,bo_title,
+	bo_content,bo_date,
+	bo_hit,bo_rcmd
+	) VALUES (
+	#{bo_no},#{board_writer},
+	#{bo_pass},#{bo_ip},
+	#{bo_mail},#{bo_title},
+	#{bo_content},sysdate,
+	0,0
+	)
+		
+	</insert>
 
 </mapper>
