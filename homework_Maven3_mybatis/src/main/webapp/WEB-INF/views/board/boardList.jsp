@@ -13,6 +13,7 @@
     <script src="http://malsup.github.com/jquery.form.js"></script> 
  
     <script type="text/javascript"> 
+   
 		
  	function ${pagingVO.funcName }(page){
   		$("[name='searchForm']").find("[name='page']").val(page);
@@ -20,7 +21,32 @@
 		$("[name='searchForm']").submit();
   	}
  	$(function() {
-        // wait for the DOM to be loaded 
+ 		
+ 		var searchForm=$('#searchForm');
+        // wait for the DOM to be loaded
+        $(window).on("popstate",function(event){
+        	console.log(event);
+        	if(event.originalEvent.state){
+        		var pagingVO=event.originalEvent.state;
+        		 var tag="<tr>";
+      			var pattern="<td>%V</td>"
+      			$.each(pagingVO.dataList,function(idx,p){
+      				tag+=pattern.replace("%V",p.rowNo);
+      				tag+=pattern.replace("%V",p.bo_no);
+      				tag+=pattern.replace("%V",p.bo_title);
+      				tag+=pattern.replace("%V",p.board_writer);
+      				tag+=pattern.replace("%V",p.bo_date);
+      				tag+=pattern.replace("%V",p.bo_hit);
+      				tag+=pattern.replace("%V",p.bo_rcmd);
+      			tag+="</tr>";
+      			});
+      			$("#output1").html(tag );
+      			$("#page2").html(pagingVO.pagingHTML);
+        	}else{
+        		location.reload();
+        	}
+        });
+        
         $(document).ready(function() { 
             $('#searchForm').ajaxForm(function() { 
             	var options={
@@ -75,6 +101,10 @@
 			});
 			$("#output1").html(tag );
 			$("#page2").html(resp.pagingHTML);
+			var pageNum=$("[name='page']").val(); 
+			var queryString=searchForm.serialize();
+			
+			history.pushState(resp, pageNum+" 페이지","?"+queryString );
 			$("[name='page']").val(" "); 
         } 
         $("#output1").on("click","tr",function(){

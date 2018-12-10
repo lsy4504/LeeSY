@@ -62,9 +62,10 @@ public interface IBoardDAO {
 	/**
 	 * 글 수정
 	 * @param board
+	 * @param session TODO
 	 * @return row count
 	 */
-	public int updateBoard(BoardVO board);
+	public int updateBoard(BoardVO board, SqlSession session);
 	/**
 	 * 글 삭제
 	 * @param ㅠo_no

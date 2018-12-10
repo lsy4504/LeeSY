@@ -67,6 +67,7 @@
 				<c:url value="/board/download.do" var="downloadURL">
 					<c:param name="what" value="${pds.pds_no }"> </c:param>
 				</c:url>
+				
 				<a href="${downloadURL }">
 					${pds.pds_filename } 
 				</a>
@@ -90,8 +91,18 @@
 			<th>추천수</th>
 			<td>${board.bo_rcmd}</td>
 		</tr>
+		<tr>
+			<td colspan="2">
+			<c:url value="/board/boardUpdate.do" var="updateURL">
+				<c:param name="what" value="${board.bo_no }"/>
+			</c:url>
+			<c:url value="/board/boardDelete.do" var="deleteURL">
+			</c:url>
+				<input type="button" value="수정" onclick="location.href='${updateURL}';"/>
+				<input type="button" value="삭제" data-toggle='modal' class='replyDelBtn'/>
+			</td> 
+		</tr>
 	</table>
-	<c:if test="${not empty board.replyList }">
 		<table>
 			<thead>
 				<tr>
@@ -116,7 +127,6 @@
 
 			</tfoot>
 		</table>
-	</c:if>
 	
 	<form  method="post" id="insertReply" action="${pageContext.request.contextPath}/reply/replyInsert.do">
 		<table>
@@ -194,8 +204,9 @@
 </div>
 <script type="text/javascript">
 	function paging(page){
-	
-		pagingReply(page,${board.bo_no});
+	var pa=page;
+	alert(page);
+		pagingReply(pa,${board.bo_no});
 	}
 	paging(1);
 </script>

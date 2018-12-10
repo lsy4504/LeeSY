@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +41,14 @@ public class DownloadController implements ICommandHandler{
 			resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 		String fileName= pds.getPds_filename();
-		fileName=new String(fileName.getBytes("UTF-8"),"ISO-8859-1");
+		String agent=req.getHeader("User-Agent");
+		if(StringUtils.containsIgnoreCase(agent, "msie")||StringUtils.containsIgnoreCase(agent, "trident")) {
+			
+			fileName=URLEncoder.encode(fileName, "UTF-8");
+		}else {
+			fileName=new String(fileName.getBytes("UTF-8"),"ISO-8859-1");
+			
+		}
 		
 		String filepath="D:/boardFiles/";
 		File downloadFile= new File(filepath,pds.getPds_savename());

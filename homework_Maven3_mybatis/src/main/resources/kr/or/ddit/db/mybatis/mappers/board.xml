@@ -9,8 +9,7 @@
 	</select>
 	<sql id="search">
 		<where>
-			<if
-				test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
 				<if test="searchType.equals('writer')">
 					board_writer like
 					'%'||#{searchWord}||'%'
@@ -42,21 +41,24 @@
 	</select>
 	<resultMap type="boardVO" id="boardMap" autoMapping="true">
 		<id column="BO_NO" property="bo_no" />
-		<collection property="pdsList" ofType="pdsVO" javaType="java.util.List" autoMapping="true" />
-		
+		<collection property="pdsList" ofType="pdsVO"
+			javaType="java.util.List" autoMapping="true" />
+
 	</resultMap>
 	<select id="selectBoard" parameterType="Long"
 		resultMap="boardMap">
-		
+
 		select board.bo_no,board_writer,bo_pass,
 		bo_ip,bo_mail,bo_title,
 		bo_content,bo_date,bo_hit,bo_rcmd
 		,pds_no,pds_savename,pds_filename,pds_size,pds_fancysize
 		,pds_mime
-		FROM board left outer join pds on(board.bo_no=pds.bo_no )
-		where board.bo_no=#{bo_no}
+		FROM
+		board left outer join pds on(board.bo_no=pds.bo_no )
+		where
+		board.bo_no=#{bo_no}
 
-		
+
 
 	</select>
 	<update id="incrementHit" parameterType="Long">
@@ -65,24 +67,42 @@
 
 	</update>
 	<insert id="insertBoard" parameterType="boardVO">
-		<selectKey order="BEFORE" keyProperty="bo_no" resultType="Long">
+		<selectKey order="BEFORE" keyProperty="bo_no"
+			resultType="Long">
 			select board_seq.NEXTVAL
 			from dual
 		</selectKey>
 		INSERT INTO board (
-	bo_no,board_writer,
-	bo_pass,bo_ip,
-	bo_mail,bo_title,
-	bo_content,bo_date,
-	bo_hit,bo_rcmd
-	) VALUES (
-	#{bo_no},#{board_writer},
-	#{bo_pass},#{bo_ip},
-	#{bo_mail},#{bo_title},
-	#{bo_content},sysdate,
-	0,0
-	)
-		
+		bo_no,board_writer,
+		bo_pass,bo_ip,
+		bo_mail,bo_title,
+		bo_content,bo_date,
+		bo_hit,bo_rcmd
+		) VALUES (
+		#{bo_no},#{board_writer},
+		#{bo_pass},#{bo_ip},
+		#{bo_mail},#{bo_title},
+		#{bo_content},sysdate,
+		0,0
+		)
+
 	</insert>
+	<update id="updateBoard" parameterType="boardVO">
+		UPDATE board
+		<set>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_mail)">
+				bo_mail =#{bo_mail},
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_title)">
+				bo_title =#{bo_title},
+			</if>
+			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_content)">
+				bo_content =#{bo_content}
+			</if>
+		</set>
+		WHERE
+		bo_no =#{bo_no}
+
+	</update>
 
 </mapper>

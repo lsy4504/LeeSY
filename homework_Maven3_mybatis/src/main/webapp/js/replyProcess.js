@@ -4,6 +4,8 @@
 
 //wait for the DOM to be loaded 
 	 function showResponse(resp, statusText, xhr, $form)  {
+			pagingArea=$("#pagingArea");
+			listBody=$("#listBody");
         	if(resp.code){
         		alert(resp.message);
         		return;
@@ -23,12 +25,11 @@
 				}else{
 					html+="<tr><td colspan='4'> 데이터없즘 .</td></tr>";
 				}
+        	$("#listBody").html(html);
 				pagingArea.html(resp.pagingHTML);
-				listBody.html(html);
-				replyForm[0].reset();
          }
 	function pagingReply(page,bo_no) {
-		
+		alert("여기는옵니까??")
 		$.ajax({
 			url : $.getContextPath()+"/reply/replyList.do",
 			data :{

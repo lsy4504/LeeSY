@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.session.SqlSession;
 
-import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.BoardException;
 import kr.or.ddit.board.dao.BoardDAOImpl;
@@ -25,41 +22,67 @@ import kr.or.ddit.vo.PdsVO;
 public class BoardServiceImpl implements IBoardService {
 	IBoardDAO boardDAO = new BoardDAOImpl();
 	IPdsDAO pdsDAO = new PdsDAOImpl();
+	
+	private int processFiles(BoardVO board, SqlSession session) {
+		int rowCnt = 0;
+		List<PdsVO> pdsList = board.getPdsList();
+		File saveFolder = new File("d:/boardFiles");
+		if(!saveFolder.exists()) saveFolder.mkdirs();
+		if(pdsList!=null) {
+//			if(1==1)
+//			throw new RuntimeException("트랜잭션 관리 여부 확인을 위한 강제 예외");
+			
+			rowCnt += pdsDAO.insertPdsList(board, session);
+			for(PdsVO pds : pdsList) {
+				try(
+						InputStream in = pds.getItem().getInputStream();	
+				){
+					FileUtils.copyInputStreamToFile(in, 
+							new File(saveFolder, pds.getPds_savename()));
+				}catch (IOException e) {
+					// TODO: handle exception
+				}
+			}
+		}
+		
+		Long[] delFiles = board.getDelFiles();
+		if(delFiles!=null) {
+			
+			String[] saveNames = new String[delFiles.length];
+			for(int idx=0; idx<delFiles.length; idx++) {
+				saveNames[idx] = pdsDAO.selectPds(delFiles[idx])
+									   .getPds_savename(); 
+			}
+			rowCnt += pdsDAO.deletePdses(board, session);
+			// 파일 삭제
+			for(String savename : saveNames) {
+				FileUtils.deleteQuietly(new File(saveFolder, savename));
+			}
+			
+		}
+		
+		return rowCnt;
+	}
 
 	@Override
 	public ServiceResult createBoard(BoardVO board) {
-		try (SqlSession session = CustomSqlSessionFactoryBuilder.getSqlSessionFactory().openSession(false);) {
-			ServiceResult result = ServiceResult.FAILED;
-			int cnt = boardDAO.insertBoard(board, session);
-			int count = 1;
-			String saveUrl = "d:/boardFiles";
-			File saveFolder = new File(saveUrl);// 폴더 생성해줌
-			if (!saveFolder.exists())
-				saveFolder.mkdirs();
-
-			if (cnt > 0) {
-				if (board.getPdsList()!=null) {
-					count += pdsDAO.insertPdsList(board, session);
-					for (PdsVO pds : board.getPdsList()) {
-
-						try (InputStream in = pds.getItem().getInputStream();) {
-							FileUtils.copyInputStreamToFile(in, new File(saveFolder, pds.getPds_savename()));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					if (count == board.getPdsList().size()) {
-						
-						result = ServiceResult.OK;
-						session.commit();
-						
-					}
-				}else {
-					result = ServiceResult.OK;
-					
-				}
+		try(
+			 SqlSession session = 
+				CustomSqlSessionFactoryBuilder.getSqlSessionFactory()
+				.openSession(false);
+		){		
+			int rowCnt = boardDAO.insertBoard(board, session);
+			int check = 1;
+			if(rowCnt>0) {
+				if(board.getPdsList()!=null)
+					check += board.getPdsList().size();
+				rowCnt += processFiles(board, session);
 			}
-
+			ServiceResult result = ServiceResult.FAILED;
+			if(rowCnt>=check) {
+				result = ServiceResult.OK;
+				session.commit();
+			}
 			return result;
 		}
 	}
@@ -71,26 +94,49 @@ public class BoardServiceImpl implements IBoardService {
 
 	@Override
 	public List<BoardVO> retriveBoardList(PagingInfoVO<BoardVO> pagingVO) {
-
-		return boardDAO.selectBoardList(pagingVO);
+		return boardDAO.selectBoardList(pagingVO);				
 	}
 
 	@Override
 	public BoardVO retriveBoard(long bo_no) {
 		BoardVO board = boardDAO.selectBoard(bo_no);
-		if (board == null) {
-			throw new CommonException("Board 에러..");
+		if(board==null) {
+			throw new BoardException(bo_no+"에 해당하는 게시글이 없음");
 		}
 		boardDAO.incrementHit(bo_no);
-		board.setBo_hit(board.getBo_hit() + 1);
-
 		return board;
 	}
 
 	@Override
 	public ServiceResult modifyBoard(BoardVO board) {
-		// TODO Auto-generated method stub
-		return null;
+		try(
+				SqlSession session = 
+						CustomSqlSessionFactoryBuilder.getSqlSessionFactory()
+													  .openSession(false);
+		){
+			BoardVO savedBoard = retriveBoard(board.getBo_no());
+			ServiceResult result = null;
+			if(savedBoard.getBo_pass().equals(board.getBo_pass())) {
+				int rowCnt = boardDAO.updateBoard(board, session);
+				int check = rowCnt;
+				if(rowCnt > 0) {
+					if(board.getPdsList()!=null) 
+						check += board.getPdsList().size();
+					if(board.getDelFiles()!=null)
+						check += board.getDelFiles().length;
+					rowCnt += processFiles(board, session);
+				}
+				if(rowCnt >= check ) {
+					session.commit();
+					result = ServiceResult.OK;	
+				}else {
+					result = ServiceResult.FAILED;
+				} // rowCnt 체크 if end
+			}else {
+				result = ServiceResult.INVALIDPASSWORD;
+			} // 비번 체크 if end
+			return result;
+		}
 	}
 
 	@Override
@@ -101,11 +147,27 @@ public class BoardServiceImpl implements IBoardService {
 
 	@Override
 	public PdsVO downLoadPds(long pds_no) {
-		PdsVO pd= pdsDAO.selectPds(pds_no);
-		if(pd==null) {
-			throw new BoardException();
-		}
-		return pd;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
+//	@Override
+//	public PdsVO downloadPds(long pds_no) {
+//		PdsVO pds = pdsDAO.selectPds(pds_no);
+//		if(pds==null) {
+//			throw new BoardException(pds_no+"에 해당 파일이 없음.");
+//		}
+//		return pds;
+//	}
+
 }
+
+
+
+
+
+
+
+
+
+
