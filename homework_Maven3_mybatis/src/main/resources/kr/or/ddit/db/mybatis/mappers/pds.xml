@@ -46,7 +46,7 @@
 	</delete>
 	<delete id="deletePdses" parameterType="boardVO">
 	delete from pds
-	where pds_no in
+	where pds_no ins
 	<foreach collection="delFiles" item="pds_no" open="(" close=")" separator=",">
 	#{pds_no}
 	</foreach>
