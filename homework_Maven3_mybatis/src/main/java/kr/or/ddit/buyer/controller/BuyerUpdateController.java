@@ -1,13 +1,10 @@
 package kr.or.ddit.buyer.controller;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,34 +15,19 @@ import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.buyer.service.IBuyerService;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.dao.OtherDAOImpl;
-import kr.or.ddit.prod.service.IProdService;
-import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.BuyerVO;
-import kr.or.ddit.vo.ProdVO;
-
-public class BuyerUpdateController implements ICommandHandler {
-
-	@Override
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String method=req.getMethod();
-		System.out.println("여기는어딘가"+method);
-		IOtherDAO other=OtherDAOImpl.getInstance();
-		List<Map<String, Object>> lprodList=other.selectLprodList();
-		req.setAttribute("lprodList", lprodList);
-		if("get".equalsIgnoreCase(method)) {
-			System.out.println("으잉?");
-			return doGet(req,resp);
-		}else if("post".equalsIgnoreCase(method)) {
-			return doPost(req,resp);
-		}
-		return null;
+@CommandHandler
+public class BuyerUpdateController{
+	IOtherDAO other=OtherDAOImpl.getInstance();
 	
-	}
 
-	private String doPost(HttpServletRequest req, HttpServletResponse resp) {
+	@URIMapping(value="/buyer/buyerUpdate.do",method=HttpMethod.POST)
+	public String doPost(HttpServletRequest req, HttpServletResponse resp) {
 		IBuyerService service = BuyerServiceImpl.getInstance();
 		BuyerVO buyer = new BuyerVO();
 		Map<String,String> errors=new HashMap<>();
@@ -79,7 +61,11 @@ public class BuyerUpdateController implements ICommandHandler {
 		return view;
 	}
 
-	private String doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	@URIMapping(value="/buyer/buyerUpdate.do",method=HttpMethod.GET)
+	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		List<Map<String, Object>> lprodList=other.selectLprodList();
+		req.setAttribute("lprodList", lprodList);
+		System.out.println("으잉?");
 		String buyer_id = req.getParameter("who");
 		if(StringUtils.isBlank(buyer_id)) {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);

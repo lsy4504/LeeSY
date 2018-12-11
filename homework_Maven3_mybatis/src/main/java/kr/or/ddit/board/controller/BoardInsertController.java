@@ -1,48 +1,36 @@
 package kr.or.ddit.board.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FileUtils;
 
 import kr.or.ddit.ServiceResult;
-import kr.or.ddit.board.dao.IBoardDAO;
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.vo.BoardVO;
-import kr.or.ddit.vo.PdsVO;
 
-public class BoardInsertController implements ICommandHandler {
-	@Override
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String method=req.getMethod();
-		if("get".equalsIgnoreCase(method)) {
-			return "board/boardForm";
-		}else if ("post".equalsIgnoreCase(method)) {
-			return doPost(req,resp);
-		}
-		
-		return null;
+@CommandHandler
+public class BoardInsertController  {
+	IBoardService service=new BoardServiceImpl();
+	@URIMapping(value="/board/boardInsert.do", method=HttpMethod.GET)
+	public String getProcess(HttpServletRequest req, HttpServletResponse resp) {
+		return "board/boardForm";
 	}
-
-	private String doPost(HttpServletRequest req, HttpServletResponse resp) {
+	@URIMapping(value="/board/boardInsert.do", method=HttpMethod.POST)
+	public String postProcess(HttpServletRequest req, HttpServletResponse resp) {
 		System.out.println("우야야야야야");
 		BoardVO board=new BoardVO();
 		req.setAttribute("board", board);
@@ -62,16 +50,17 @@ public class BoardInsertController implements ICommandHandler {
 				board.setItemList(fileItems);
 				
 			}
-			IBoardService service=new BoardServiceImpl();
+			
 			ServiceResult res=service.createBoard(board);
 			switch (res) {
 			case OK:
 				return "redirect:/board/boardList.do";
-
+				
 			case FAILED:
 				return	"/board/boardInsert";
 			}
 		}
 		return null;
 	}
+
 }

@@ -113,6 +113,9 @@
 						</nav>
 		 		</td>
 		 	</tr>
+		 	<tr>
+		 		
+		 	</tr>
 		 </tfoot>
 	</table> 
 	</div>

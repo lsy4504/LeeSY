@@ -2,22 +2,23 @@ package kr.or.ddit.member.controller;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.vo.MemberVO;
-public class MyPageController implements ICommandHandler{
+
+@CommandHandler
+public class MyPageController {
 	
 	
 	//지렁이 .do 가아님 jsp로감..
+	@URIMapping("/member/mypage.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //		req.getSession();
 		

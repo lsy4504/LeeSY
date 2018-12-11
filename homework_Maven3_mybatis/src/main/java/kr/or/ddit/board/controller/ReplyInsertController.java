@@ -1,7 +1,6 @@
 package kr.or.ddit.board.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,12 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.IReplyService;
 import kr.or.ddit.board.service.ReplyServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.ReplyVO;
 import kr.or.ddit.web.calculate.MimeType;
-
-public class ReplyInsertController implements ICommandHandler {
-	@Override
+@CommandHandler
+public class ReplyInsertController  {
+	@URIMapping(value="/reply/replyInsert.do" , method=HttpMethod.GET)
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		ReplyVO reply = new ReplyVO();
 		resp.setContentType(MimeType.JSON.getMimeType());

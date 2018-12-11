@@ -14,14 +14,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.mvc.ICommandHandler;
 import kr.or.ddit.mvc.annotation.CommandHandler;
 import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PagingInfoVO;
 @CommandHandler
-public class BoardListController implements ICommandHandler{
-	@URIMapping("/board/boardList.do")
+public class BoardListController {
+	@URIMapping(value="/board/boardList.do",method=HttpMethod.GET)
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PagingInfoVO<BoardVO> pagingVO=new PagingInfoVO<>();
 		IBoardService service= new BoardServiceImpl();
@@ -54,6 +54,10 @@ public class BoardListController implements ICommandHandler{
 		
 		
 		return "board/boardList";
+	}
+	@URIMapping(value="/board/boardList.do", method=HttpMethod.POST)
+	public String postProcess(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+		return process(req, resp);
 	}
 	
 

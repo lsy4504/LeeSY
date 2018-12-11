@@ -1,14 +1,46 @@
 package kr.or.ddit.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ReflectionUtil {
+	public static List<Class<?>> getClassesAtBasePackageTrabersing(String basePackage) throws IOException, URISyntaxException {
+		List<Class<?>> classList = new ArrayList<Class<?>>();
+		URL baseURL=Thread.currentThread().getContextClassLoader().getResource("/"+basePackage.replace(".", "/"));//콸리파이드 네임을 폴더경로로 변ㄱ셩해주 ㅁ
+		Path start=Paths.get(baseURL.toURI());
+		Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+				if(file.toString().endsWith(".class")) {
+					//kr.or.ddit.board.BoarddeleteController
+					String temp=file.toString().substring(start.toString().length());
+					String qualifiedName= basePackage+ temp.substring(0, temp.lastIndexOf('.')).replace(File.separatorChar,'.');
+					try {
+						classList.add(Class.forName(qualifiedName));
+					} catch (ClassNotFoundException e) {
+						return FileVisitResult.CONTINUE;
+					}
+				}
+				return super.visitFile(file, attrs);
+				
+			}
+		});
+		return classList;
+		
+	}
 	public static List<Class<?>> getClassesAtBasePackage(String basePackage) {
 		List<Class<?>> classList = new ArrayList<Class<?>>();
 		URL baseURL=Thread.currentThread().getContextClassLoader().getResource("/"+basePackage.replace(".", "/"));//콸리파이드 네임을 폴더경로로 변ㄱ셩해주 ㅁ
@@ -37,18 +69,18 @@ public class ReflectionUtil {
 		return classList;
 	}
 
-	public static List<Class<?>> getClassesAtBasePackages(String... basePackages) {
+	public static List<Class<?>> getClassesAtBasePackages(String... basePackages) throws IOException, URISyntaxException {
 		List<Class<?>> classList = new ArrayList<>();
 		if (basePackages != null) {
 			for (String basePackage : basePackages) {
-				classList.addAll(getClassesAtBasePackage(basePackage));
+				classList.addAll(getClassesAtBasePackageTrabersing(basePackage));
 			}
 		}
 		return classList;
 	}
 
 	public static List<Class<?>> getClassesWithAnnotationAtBasePackages(Class<? extends Annotation> annotationType,
-			String... basePackages) {
+			String... basePackages) throws IOException, URISyntaxException {
 		List<Class<?>> classList = getClassesAtBasePackages(basePackages);
 		for (int idx = classList.size() - 1; idx >= 0; idx--) {
 			Class<?> temp = classList.get(idx);

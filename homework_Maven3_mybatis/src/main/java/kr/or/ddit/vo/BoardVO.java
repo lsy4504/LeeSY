@@ -1,15 +1,10 @@
 package kr.or.ddit.vo;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.type.Alias;
 
 import kr.or.ddit.validator.rules.constraints.NotBlank;
@@ -36,6 +31,8 @@ public class BoardVO implements Serializable {
 	private List<PdsVO> pdsList;
 	private List<ReplyVO> replyList;
 	private Long[] delFiles;
+	private Integer  bo_level;
+	private Long bo_parent;
 
 	private List<FileItem> itemList;
 

@@ -7,17 +7,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.buyer.service.IBuyerService;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.vo.BuyerVO;
 import kr.or.ddit.vo.PagingInfoVO;
+@CommandHandler
+public class BuyerListController{
 
-public class BuyerListController implements ICommandHandler {
-
-	@Override
+	@URIMapping("/buyer/buyerList.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		int currentPage=1;
 		String page=req.getParameter("page");

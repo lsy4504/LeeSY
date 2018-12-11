@@ -145,6 +145,40 @@
 		</tr>
 	</c:if>
 	</table>
+	<h4>판매상품목록</h4>
+	<table calss="table">
+		<thead>
+			<tr>
+			<th>품번</th>
+			<th>품명</th>
+			<th>매입가</th>
+			<th>가격</th>
+			<th>상세정보?</th>
+			</tr>
+		</thead>
+		<tbody>
+		<c:set var="prodList" value="${prod.prodList }"></c:set>
+		<c:choose>
+			<c:when test="${not empty prodList }">
+				<c:forEach items="${ prodList}" var="p">
+				<tr>
+				<td>${p.prod_id }</td>
+				<td>${p.prod_name }</td>
+				<td>${p.prod_cost }</td>
+				<td>${p.prod_price }</td>
+				<td>${p.prod_outline}</td>
+				</tr>
+				</c:forEach>
+			</c:when>
+			<c:otherwise>
+				<tr>
+					<td colspan="5"> 구매 노 상 구매 노상 거ㅈ;ㅣ냐고</td>
+				</tr>
+			
+			</c:otherwise>
+		</c:choose>
+		</tbody>
+	</table>
 
 </body>
 </html>

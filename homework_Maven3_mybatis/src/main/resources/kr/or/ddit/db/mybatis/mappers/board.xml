@@ -9,7 +9,8 @@
 	</select>
 	<sql id="search">
 		<where>
-			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
 				<if test="searchType.equals('writer')">
 					board_writer like
 					'%'||#{searchWord}||'%'
@@ -31,16 +32,24 @@
 		SELECT b.*
 		from(
 		SELECT ROWNUM rowno,A.*
-		FROM (SELECT *
+		FROM (SELECT bo_no,
+		LPAD('RE:',3*(level-1),' ')||bo_title BO_TITLE,
+		board_writer, bo_date, bo_hit,bo_rcmd, LEVEL BO_LEVEL
 		FROM
 		board
+
 		<include refid="search" />
-		ORDER BY bo_no DESC )A)b
-		where b.rowno between #{startRow} and
+		START WITH BO_PARENT IS NULL
+		CONNECT BY PRIOR BO_NO=BO_PARENT
+		ORDER
+		SIBLINGS BY bo_no desc
+		)A)b
+		where b.rowno between
+		#{startRow} and
 		#{endRow}
 	</select>
 	<resultMap type="boardVO" id="boardMap" autoMapping="true">
-		<id column="BO_NO" property="bo_no" />
+		<id column="BOARD_NO" property="bo_no" />
 		<collection property="pdsList" ofType="pdsVO"
 			javaType="java.util.List" autoMapping="true" />
 
@@ -48,7 +57,7 @@
 	<select id="selectBoard" parameterType="Long"
 		resultMap="boardMap">
 
-		select board.bo_no,board_writer,bo_pass,
+		select board.bo_no BOARD_NO,board_writer,bo_pass,
 		bo_ip,bo_mail,bo_title,
 		bo_content,bo_date,bo_hit,bo_rcmd
 		,pds_no,pds_savename,pds_filename,pds_size,pds_fancysize
@@ -78,31 +87,55 @@
 		bo_mail,bo_title,
 		bo_content,bo_date,
 		bo_hit,bo_rcmd
+		<if test="bo_parent>0">
+			,bo_parent
+		</if>
 		) VALUES (
 		#{bo_no},#{board_writer},
 		#{bo_pass},#{bo_ip},
 		#{bo_mail},#{bo_title},
 		#{bo_content},sysdate,
 		0,0
+		<if test="bo_parent>0">
+			,#{bo_parent,jdbcType=NUMERIC}
+		</if>
 		)
 
 	</insert>
 	<update id="updateBoard" parameterType="boardVO">
 		UPDATE board
 		<set>
-			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_mail)">
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_mail)">
 				bo_mail =#{bo_mail},
 			</if>
-			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_title)">
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_title)">
 				bo_title =#{bo_title},
 			</if>
-			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_content)">
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_content)">
 				bo_content =#{bo_content}
 			</if>
 		</set>
 		WHERE
 		bo_no =#{bo_no}
 
+	</update>
+	<delete id="deleteBoard" parameterType="Long">
+		DELETE FROM board
+		WHERE bo_no IN(
+		SELECT bo_no
+		FROM board
+		START WITH bo_no=#{bo_no}
+		connect by prior bo_no=bo_parent
+		)
+	</delete>
+	<update id="incrementRcmd" parameterType="Long">
+	update board
+	set bo_rcmd=bo_rcmd+1
+	where bo_no=#{data}
+		
 	</update>
 
 </mapper>

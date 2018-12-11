@@ -1,9 +1,6 @@
 package kr.or.ddit.buyer.controller;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,39 +16,24 @@ import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.buyer.service.IBuyerService;
-import kr.or.ddit.member.service.IMemberSerivce;
-import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.vo.BuyerVO;
-import kr.or.ddit.vo.MemberVO;
-
-public class BuyerInsertController implements ICommandHandler{
-
-	@Override
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String method= req.getMethod();
-		String view= null;
+@CommandHandler
+public class BuyerInsertController{
+	@URIMapping(value="/buyer/buyerInsert.do" , method=HttpMethod.GET)
+	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		IOtherDAO otherDAO= OtherDAOImpl.getInstance();
 		List<Map<String, Object>> lprodList= otherDAO.selectLprodList();
 		req.setAttribute("lprodList", lprodList);
-		if("get".equalsIgnoreCase(method)) {
-			view=doGet(req, resp);
-		}else if("post".equalsIgnoreCase(method)){
-			view =doPost(req, resp);
-		}else {
-			//redirect를 언제붙리닌지 아까전에 세개다 붙여서
-			//
-			resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		}
-		return view;
-	}
-	protected String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String view="buyer/buyerForm";
 		return view;
 	}
-	protected String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@URIMapping(value="/buyer/buyerInsert.do" , method=HttpMethod.POST)
+	public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		BuyerVO buyer = new BuyerVO();
 		Map<String, String> errors=new HashMap<>();
 		//넘어온값 가져오기

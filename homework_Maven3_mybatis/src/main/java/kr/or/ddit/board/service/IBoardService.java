@@ -64,6 +64,8 @@ public interface IBoardService {
 	 * @return 없다면 BoardException 발생
 	 */
 	public PdsVO downLoadPds(long pds_no);
+	
+	public ServiceResult boomUp(long bo_no) ;
 
 	
 }

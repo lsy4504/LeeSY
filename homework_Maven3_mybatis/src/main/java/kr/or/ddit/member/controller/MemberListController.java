@@ -3,10 +3,7 @@ package kr.or.ddit.member.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,13 +11,14 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingInfoVO;
-
-public class MemberListController implements ICommandHandler{
+@CommandHandler
+public class MemberListController{
 	
-	
+	@URIMapping("/member/memberList.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		/*1. 요청과의 매핑설정

@@ -56,8 +56,9 @@ public interface IBoardDAO {
 	/**
 	 * 추천수 증가
 	 * @param bo_no
+	 * @return TODO
 	 */
-	public void incrementRcmd(long bo_no); 
+	public int incrementRcmd(long bo_no); 
 	
 	/**
 	 * 글 수정
@@ -68,8 +69,9 @@ public interface IBoardDAO {
 	public int updateBoard(BoardVO board, SqlSession session);
 	/**
 	 * 글 삭제
+	 * @param session TODO
 	 * @param ㅠo_no
 	 * @return row count
 	 */
-	public int deleteBoard(long bo_no);
+	public int deleteBoard(long bo_no, SqlSession session);
 }

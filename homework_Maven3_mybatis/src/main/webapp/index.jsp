@@ -73,7 +73,7 @@ function goLog(commend) {
 	<% 
 			if (authMember!=null) {
 				out.println("<a href='"+request.getContextPath() +"/member/mypage.do'>"+authMember.getMem_name() + "</a>님("+authMember.getMem_auth() +")");
-				out.print(String.format("<a href='%s'>로그아웃</a>", request.getContextPath() + "/login/logout.jsp"));
+				out.print(String.format("<a href='%s'>로그아웃</a>", request.getContextPath() + "/common/login.do"));
 			} else {
 				out.print(
 						String.format("<a href=%s>로그인 하러가기</a>", "javascript:goLog('login');"));

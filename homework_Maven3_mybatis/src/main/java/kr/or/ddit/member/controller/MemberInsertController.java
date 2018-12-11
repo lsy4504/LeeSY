@@ -8,49 +8,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.javassist.expr.Instanceof;
 
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.vo.MemberVO;
-public class MemberInsertController implements ICommandHandler{
-	@Override
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String method= req.getMethod();
-		String view= null;
-		if("get".equalsIgnoreCase(method)) {
-			view=doGet(req, resp);
-		}else if("post".equalsIgnoreCase(method)){
-			view =doPost(req, resp);
-		}else {
-			//redirect를 언제붙리닌지 아까전에 세개다 붙여서
-			//
-			resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		}
-		return view;
-	}
+@CommandHandler
+public class MemberInsertController {
 	
-	protected String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	
+	@URIMapping(value="/member/memberInsert.do",method=HttpMethod.GET)
+	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String view="member/memberForm";
 		return view;
 	}
-	protected String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@URIMapping(value="/member/memberInsert.do",method=HttpMethod.POST)
+	public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		IMemberSerivce serivce=MemberServiceImpl.getInstance();
 		MemberVO member= new MemberVO();
 		req.setAttribute("member", member);

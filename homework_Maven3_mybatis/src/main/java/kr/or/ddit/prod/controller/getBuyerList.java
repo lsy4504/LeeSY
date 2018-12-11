@@ -8,20 +8,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.omg.CORBA.Object;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kr.or.ddit.member.controller.MyPageController;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.vo.BuyerVO;
-import kr.or.ddit.web.calculate.MimeType;
+@CommandHandler
+public class getBuyerList  {
 
-public class getBuyerList implements ICommandHandler {
-
-	@Override
+	@URIMapping("/prod/getBuyerList.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		req.setCharacterEncoding("UTF-8");
 		String buyer_lgu = req.getParameter("prod_lgu");

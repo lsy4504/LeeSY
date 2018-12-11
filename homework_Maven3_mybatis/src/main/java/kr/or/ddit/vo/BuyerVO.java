@@ -1,6 +1,7 @@
 package kr.or.ddit.vo;
 //파는 물품 나오게 
 import java.io.Serializable;
+import java.util.List;
 
 import org.apache.ibatis.type.Alias;
 
@@ -24,6 +25,7 @@ public class BuyerVO implements Serializable{
 	private String buyer_telext;
 	private String address;
 	private String buyer_delete;
+	private List<ProdVO> prodList;
 	
 	public String getAddress() {
 		return buyer_add1+buyer_add2;

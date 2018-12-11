@@ -70,6 +70,8 @@
 			name='bo_ip'>
 		<input type="hidden" value="${board.bo_no }"
 			name='bo_no'>
+		<input type="hidden" value="${param.parent }"
+			name='bo_parent'>
 
 	</form>
 	<script type="text/javascript">

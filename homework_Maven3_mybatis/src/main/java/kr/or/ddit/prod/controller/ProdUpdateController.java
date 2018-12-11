@@ -3,14 +3,11 @@ package kr.or.ddit.prod.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,34 +19,21 @@ import org.apache.commons.lang3.StringUtils;
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
 import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.ProdVO;
-import lombok.val;
-
-public class ProdUpdateController implements ICommandHandler {
-		@Override
-		public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-			String method=req.getMethod();
-			IOtherDAO other=OtherDAOImpl.getInstance();
-			List<Map<String, Object>> lprodList=other.selectLprodList();
-			req.setAttribute("lprodList", lprodList);	
-			
-			if("get".equalsIgnoreCase(method)) {
-				
-				return	doGet(req, resp);
-			}else if ("post".equalsIgnoreCase(method)) {
-				return
-						doPost(req,resp);
-			}
-			
-			return null;
-		}
-
-		private String doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+@CommandHandler
+public class ProdUpdateController{
+	IOtherDAO other=OtherDAOImpl.getInstance();
+	IProdService service = ProdServiceImpl.getInstance();
+	List<Map<String, Object>> lprodList=other.selectLprodList();
+		@URIMapping(value="/prod/prodUpdate.do",method=HttpMethod.POST)
+		public String doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 			ProdVO prod=new ProdVO();
 			Map<String, String> errors=new HashMap<>();
 			req.setAttribute("errors", errors);
@@ -103,7 +87,10 @@ public class ProdUpdateController implements ICommandHandler {
 			return view;
 		}
 
-		private String doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		@URIMapping(value="/prod/prodUpdate.do",method=HttpMethod.GET)
+		public String doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+			req.setAttribute("lprodList", lprodList);	
+			
 			String prod_id=req.getParameter("what");
 			String view=null;
 			
@@ -112,10 +99,11 @@ public class ProdUpdateController implements ICommandHandler {
 				resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 				return null;
 			}
-			IProdService service = ProdServiceImpl.getInstance();
+			
 			ProdVO prod=service.retriveProd(prod_id);
-			req.setAttribute("prod", prod);
+			
 	
+			req.setAttribute("prod", prod);
 			
 			return "prod/prodForm";
 		}

@@ -59,7 +59,7 @@
 		
 		<!-- <association property=""></association> 1:1 관계 -->
 <!-- 		<collection property=""></collection>  1:N관계-->
-		<collection property="prodList"  autoMapping="true" javaType="java.util.List" ofType="prodVO"/>
+		
 	</resultMap>
 	
 	<select id="selectMember" parameterType="string" resultMap="memberMap">

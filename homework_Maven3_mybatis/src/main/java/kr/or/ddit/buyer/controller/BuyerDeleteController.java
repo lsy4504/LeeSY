@@ -11,11 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.buyer.service.IBuyerService;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.BuyerVO;
-
-public class BuyerDeleteController implements ICommandHandler {
-	@Override
+@CommandHandler
+public class BuyerDeleteController  {
+	@URIMapping(value="/buyer/buyerDelete.do" , method=HttpMethod.POST)
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String buyer_id=req.getParameter("buyer_id");
 		if (StringUtils.isBlank(buyer_id)) {

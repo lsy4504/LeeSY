@@ -28,13 +28,56 @@
 	$.getContextPath = function(){
 		return "${pageContext.request.contextPath }";
 	}
-	alert($.getContextPath());
-</script>		
+	function deleteFunc(){
+		var bo_pass=prompt("비 밀 번 호 입 룍 ");
+		if(!bo_pass) return;
+		document.deleteForm.bo_pass.value=bo_pass;
+		document.deleteForm.submit();
+		
+	}
+	
+<c:if test="${not empty message }">
+	alert("${message }");
+	<c:remove var="message" scope="session"/>
+</c:if>
+$(function() {
+	$("#boomUp").on("click",function(){
+		
+			
+		alert("ㅇㅇ");
+		var url="${pageContext.request.contextPath}/board/boomUp.do";
+		var method="post";
+		var data=$("#ff").serialize();
+		$.ajax({
+			url : url,
+			method : method,
+			data :data,
+			dataType : "json",
+			success : function(resp) {
+				alert(resp.flag)
+				if(resp.flag){
+					var count=$('#boomUptd').text();
+					alert(count);
+					 count=parseInt(count)+1;
+					alert(count);
+					$('#boomUptd').text(count);
+				}
+			},
+			error : function(resp) {
 
+			}
+		});
+	})
+})
+</script>	
 <title>Insert title here</title>
 </head>
 <body>
-	<table>
+<form action='<c:url value='/board/boardDelete.do'/>' name="deleteForm" method="post" id="ff">
+	<input type="hidden" name="bo_no" value="${board.bo_no }"/> 
+	<input type="hidden" name="bo_pass"/> 
+</form>
+	<table id='listTable'>
 		<tr>
 			<th>글번호</th>
 			<td>${board.bo_no}</td>
@@ -89,7 +132,8 @@
 		</tr>
 		<tr>
 			<th>추천수</th>
-			<td>${board.bo_rcmd}</td>
+			<td id="boomUptd">${board.bo_rcmd}</td>
+			<td><input type="button"  id="boomUp" value="붐업!">  </td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -99,7 +143,11 @@
 			<c:url value="/board/boardDelete.do" var="deleteURL">
 			</c:url>
 				<input type="button" value="수정" onclick="location.href='${updateURL}';"/>
-				<input type="button" value="삭제" data-toggle='modal' class='replyDelBtn'/>
+				<input type="button" value="삭제" onclick="deleteFunc()";/>
+				<c:url value="/board/boardInsert.do" var="insertURL">
+					<c:param name="parent" value="${board.bo_no }"></c:param>
+				</c:url>
+				<input type="button" value="답글쓰끼" onclick="location.href='${insertURL}'"/>
 			</td> 
 		</tr>
 	</table>

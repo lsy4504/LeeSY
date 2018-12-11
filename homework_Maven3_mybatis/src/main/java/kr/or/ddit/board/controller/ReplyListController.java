@@ -14,13 +14,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.board.service.IReplyService;
 import kr.or.ddit.board.service.ReplyServiceImpl;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ReplyVO;
+@CommandHandler
+public class ReplyListController {
 
-public class ReplyListController implements ICommandHandler{
-
-	@Override
+	@URIMapping("/reply/replyList.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String bo_noStr= req.getParameter("bo_no");
 		String page = req.getParameter("page");

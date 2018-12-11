@@ -12,14 +12,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.buyer.service.BuyerServiceImpl;
 import kr.or.ddit.buyer.service.IBuyerService;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.vo.BuyerVO;
+@CommandHandler
+public class BuyerViewController  {
 
-public class BuyerViewController implements ICommandHandler {
-
-	@Override
+	@URIMapping("/buyer/buyerView.do")
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String buyer_id= req.getParameter("who");
 		if(StringUtils.isBlank(buyer_id)) {

@@ -1,12 +1,10 @@
 package kr.or.ddit.board.controller;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,33 +16,31 @@ import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
 import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
-import kr.or.ddit.mvc.ICommandHandler;
+import kr.or.ddit.mvc.annotation.CommandHandler;
+import kr.or.ddit.mvc.annotation.URIMapping;
+import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
 import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.BoardVO;
-
-public class BoardUpdateController implements ICommandHandler{
-	@Override
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String method=req.getMethod();
-		if ("get".equalsIgnoreCase(method)) {
-			String bo_noStr=req.getParameter("what");
-			long bo_no=0;
-			if(StringUtils.isNotBlank(bo_noStr)) {
-				bo_no=Long.parseLong(bo_noStr);
-			}
-			IBoardService service=new BoardServiceImpl();
-			
-			BoardVO board= service.retriveBoard(bo_no);
-			req.setAttribute("board", board);
-			return "board/boardForm";
-		}else if("post".equalsIgnoreCase(method)) {
-			return doPost(req,resp);
+@CommandHandler
+public class BoardUpdateController {
+	IBoardService service=new BoardServiceImpl();
+	@URIMapping(value="/board/boardUpdate.do",method=HttpMethod.GET)
+	public String getProcess(HttpServletRequest req ,HttpServletResponse resp) {
+		String bo_noStr=req.getParameter("what");
+		long bo_no=0;
+		if(StringUtils.isNotBlank(bo_noStr)) {
+			bo_no=Long.parseLong(bo_noStr);
 		}
-		return null;
+		
+		BoardVO board= service.retriveBoard(bo_no);
+		req.setAttribute("board", board);
+		return "board/boardForm";
+		
 	}
+	@URIMapping(value="/board/boardUpdate.do", method=HttpMethod.POST)
+	public String postPrecess(HttpServletRequest req ,HttpServletResponse resp) {
 
-	private String doPost(HttpServletRequest req, HttpServletResponse resp) {
 		BoardVO board= new BoardVO();
 		
 		try {
@@ -61,7 +57,6 @@ public class BoardUpdateController implements ICommandHandler{
 				List<FileItem> fileItems= ((FileUploadReaquestWrapper) req).getFileItems("bo_file");
 				board.setItemList(fileItems);
 			}
-			IBoardService service=new BoardServiceImpl();
 			ServiceResult res= service.modifyBoard(board);
 			switch (res) {
 			case OK:
@@ -81,5 +76,8 @@ public class BoardUpdateController implements ICommandHandler{
 		req.setAttribute("errors",errors );
 		req.setAttribute("board", board);
 		return view;
+	
+		
 	}
+
 }
