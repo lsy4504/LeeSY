@@ -125,7 +125,7 @@
 	</dependency>
 	<dependency>
 		<groupId>kr.or.ddit</groupId>
-		<artifactId>myValidator</artifactId>
+		<artifactId>myvalidator</artifactId>
 		<version>1.0</version>
 	</dependency>
 	<dependency>
