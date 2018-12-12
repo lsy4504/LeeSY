@@ -42,8 +42,6 @@
 </c:if>
 $(function() {
 	$("#boomUp").on("click",function(){
-		
-			
 		alert("ㅇㅇ");
 		var url="${pageContext.request.contextPath}/board/boomUp.do";
 		var method="post";

@@ -36,6 +36,7 @@ public class BoardBoomUpController  {
 		case OK:
 			HttpSession session= req.getSession();
 			session.setAttribute("check", "true");
+			
 			boomMap.put("flag", "true");
 			break;
 

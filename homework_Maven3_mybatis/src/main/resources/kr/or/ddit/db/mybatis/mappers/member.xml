@@ -58,7 +58,7 @@
 		<id  property="mem_id" column="MEM_ID" /><!--pk는 id로 설정  -->
 		
 		<!-- <association property=""></association> 1:1 관계 -->
-<!-- 		<collection property=""></collection>  1:N관계-->
+		<collection property="prodList" ofType="prodVO"  autoMapping="true" javaType="java.util.List" ></collection>  <!-- 1:N관계 -->
 		
 	</resultMap>
 	

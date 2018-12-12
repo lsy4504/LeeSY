@@ -27,6 +27,7 @@ public class LoginController {
 	@URIMapping(value="/common/login.do",method=HttpMethod.POST)
 	public String login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		HttpSession session=req.getSession(); 
+		System.out.println("야야 우야");
 			String mem_id=req.getParameter("mem_id");
 			String mem_pass=req.getParameter("mem_pass");
 			String idChecked=req.getParameter("idChecked");
@@ -60,6 +61,7 @@ public class LoginController {
 					
 				}
 			}
+		System.out.println(goPage);
 		return goPage;
 		
 	}

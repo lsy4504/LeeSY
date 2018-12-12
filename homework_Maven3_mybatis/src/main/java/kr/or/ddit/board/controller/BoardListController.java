@@ -24,6 +24,7 @@ public class BoardListController {
 	@URIMapping(value="/board/boardList.do",method=HttpMethod.GET)
 	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		PagingInfoVO<BoardVO> pagingVO=new PagingInfoVO<>();
+		
 		IBoardService service= new BoardServiceImpl();
 		String searchWord=req.getParameter("searchWord");
 		String searchType=req.getParameter("searchType");

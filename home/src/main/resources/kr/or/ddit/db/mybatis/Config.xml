@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<properties resource="kr/or/ddit/db/dbInfo.properties" />
+	<settings>
+		<setting name="lazyLoadingEnabled" value="true"/>
+	</settings>
+	<typeAliases>
+		<package name="kr.or.ddit.vo" />
+	</typeAliases>
+	<environments default="dev">  <!-- 개발환경과 서버환경을 나누기 위한 구역 -->
+		<environment id="dev">
+			<transactionManager type="JDBC" /> <!-- 우리가 설정한 트랜잭션을 사용하기위한 코드 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driverClassName}" /> <!--dbInfo 프로퍼티 파일과 매핑..  -->
+				<property name="url" value="${url}" />
+				<property name="username" value="${user}" />
+				<property name="password" value="${password}" />
+				<property name="poolMaximumActiveConnections"
+					value="${maxActive}" />
+				<property name="poolTimeToWait" value="${maxWait}" />
+				<!--커넥션 생성정보   -->
+			</dataSource> <!-- 풀드(mybatis)는 풀링용 api 갖고있,언풀드 3가지 타입이 있음.. -->
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="kr/or/ddit/db/mybatis/mappers/boardBook.xml"/>
+	</mappers>
+
+
+</configuration>

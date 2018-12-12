@@ -18,6 +18,9 @@
 				<if test="searchType.equals('title')">
 					bo_title like '%'||#{searchWord}||'%'
 				</if>
+				<if test="searchType.equals('content')">
+					bo_content like '%'||#{searchWord}||'%'
+				</if>
 				<if test="searchType.equals('all')">
 					board_writer like '%'||#{searchWord}||'%'
 					OR
