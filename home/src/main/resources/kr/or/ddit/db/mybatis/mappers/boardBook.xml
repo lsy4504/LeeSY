@@ -35,5 +35,14 @@
 		)
 
 	</insert>
-
+	<select id="selectBoardBook" parameterType="Long" resultType="boardBookVO">
+		select * from boardbook where bo_no=#{bo_no}
+	</select>
+	<update id="updateBoardBook" parameterType="boardBookVO">
+		update boardbook set bo_content=#{bo_content} where bo_no=#{bo_no}
+		
+	</update>
+	<delete id="deleteBoardBook" parameterType="Long">
+		delete from boardbook where bo_no=#{bo_no}
+	</delete>
 </mapper>

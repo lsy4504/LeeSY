@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Update;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,42 +23,49 @@ import kr.or.ddit.mvc.annotation.CommandHandler;
 import kr.or.ddit.mvc.annotation.URIMapping;
 import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
+import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.BoardBookVO;
 
 @CommandHandler
-public class BoardBookInsertController {
-	IBoardBookService service=new BoardBookServiceImpl();
-	@URIMapping(value="/boardBook/boardBookInsert.do",method=HttpMethod.POST)
-	public String insert(HttpServletRequest req,HttpServletResponse resp) throws IOException {
-		System.out.println("아잉");
-		BoardBookVO boardBookVO=new BoardBookVO();
+public class BoardBookUpdateController {
+	@URIMapping(value="/boardBook/boardBookUpdate.do",method=HttpMethod.POST)
+	public String doPost(HttpServletRequest req,HttpServletResponse resp) throws IOException {
+		IBoardBookService service =new BoardBookServiceImpl();
+		BoardBookVO board=new BoardBookVO();
 		try {
-			BeanUtils.populate(boardBookVO, req.getParameterMap());
+			BeanUtils.populate(board, req.getParameterMap());
 		} catch (IllegalAccessException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		Map<String, List<CharSequence>> errors= new HashMap<>();
-		Map<String, String> messege =new HashMap<>();
-		
-		GeneralValidator validator = new GeneralValidator();
-		validator.validate(boardBookVO, errors, Insert.class);
-		ServiceResult res= service.insertBoardBook(boardBookVO);
+		Map<String, List<CharSequence>> errors=new HashMap<String, List<CharSequence>>();
+		GeneralValidator validator=new GeneralValidator();
+		boolean valid=validator.validate(board, errors, Update.class);
+		if (valid) {
+			
+		}
+		ServiceResult res=  service.updateBoardBook(board);
+		Map<String, String> messege=new HashMap<>();
 		switch (res) {
 		case OK:
 			messege.put("flag", "true");
 			break;
+		case INVALIDPASSWORD:
+			messege.put("flag", "false");
+			messege.put("content", "비밀번호...");
+			break;
 		case FAILED:
 			messege.put("flag", "false");
+			messege.put("content", "서버오류....");
 			break;
-
 		}
 		resp.setContentType(MimeType.JSON.getMimeType());
-		ObjectMapper mapper=new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		try(
-				PrintWriter out = resp.getWriter();
-				){
+				PrintWriter out=resp.getWriter();
+		){
 			mapper.writeValue(out, messege);
 		}
+		
 		return null;
 		
 	}

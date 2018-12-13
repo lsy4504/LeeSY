@@ -17,7 +17,7 @@ public class PagingVO<T> {
 		this.blockSize = blockSize;
 	}
 	private long totalRecord;
-	private int screenSize=10;
+	private int screenSize=3;
 	private int blockSize=5;
 	private long currentPage;
 	private long totalPage;

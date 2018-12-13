@@ -37,6 +37,7 @@ public class BoardListController {
 			currentPage=Integer.parseInt(page);
 			
 		}
+		System.out.println(page);
 		pagingVO.setTotalRecord(totalRecord);
 		pagingVO.setCurrentPage(currentPage);
 		

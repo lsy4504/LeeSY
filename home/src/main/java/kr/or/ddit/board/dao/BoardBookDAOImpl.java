@@ -33,7 +33,10 @@ public class BoardBookDAOImpl implements IBoardBookDAO{
 
 	@Override
 	public BoardBookVO selectBoardBook(Long bo_no) {
-		return null;
+		try (SqlSession session = sqlSessionFactory.openSession();) {
+			IBoardBookDAO mapper = session.getMapper(IBoardBookDAO.class);
+			return mapper.selectBoardBook(bo_no);
+		}
 	}
 
 	@Override
@@ -48,12 +51,23 @@ public class BoardBookDAOImpl implements IBoardBookDAO{
 
 	@Override
 	public int deleteBoardBook(Long bo_no) {
-		return 0;
+		try (SqlSession session = sqlSessionFactory.openSession();) {
+			IBoardBookDAO mapper = session.getMapper(IBoardBookDAO.class);
+			int cnt=mapper.deleteBoardBook(bo_no);
+			if(cnt>0)session.commit();
+			return cnt;
+		}
 	}
 
 	@Override
 	public int updateBoardBook(BoardBookVO board) {
-		return 0;
+		try (SqlSession session = sqlSessionFactory.openSession();) {
+			System.out.println("????");
+			IBoardBookDAO mapper = session.getMapper(IBoardBookDAO.class);
+			int cnt=mapper.updateBoardBook(board);
+			if(cnt>0) session.commit();
+			return cnt;
+		}
 	}
 
 }

@@ -25,6 +25,7 @@
 	</environments>
 	<mappers>
 		<mapper resource="kr/or/ddit/db/mybatis/mappers/boardBook.xml"/>
+		<mapper resource="kr/or/ddit/db/mybatis/mappers/replyBook.xml"/>
 	</mappers>
 
 

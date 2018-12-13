@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.or.ddit.MimeType;
 import kr.or.ddit.board.service.BoardBookServiceImpl;
 import kr.or.ddit.board.service.IBoardBookService;
 import kr.or.ddit.mvc.annotation.CommandHandler;
@@ -43,6 +44,7 @@ public class BoardBookListController {
 			return "boardBook/boardBook";
 		}
 		System.out.println("우야야야야");
+		resp.setContentType(MimeType.JSON.getMimeType());
 		ObjectMapper mapper=new ObjectMapper();
 		try(
 				PrintWriter out =resp.getWriter();

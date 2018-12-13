@@ -3,6 +3,7 @@ package kr.or.ddit.board.service;
 import java.util.List;
 
 import kr.or.ddit.ServiceResult;
+import kr.or.ddit.board.BoardException;
 import kr.or.ddit.board.dao.BoardBookDAOImpl;
 import kr.or.ddit.board.dao.IBoardBookDAO;
 import kr.or.ddit.vo.BoardBookVO;
@@ -22,8 +23,11 @@ public class BoardBookServiceImpl implements IBoardBookService {
 
 	@Override
 	public BoardBookVO selectBoardBook(Long bo_no) {
-		// TODO Auto-generated method stub
-		return null;
+		BoardBookVO boardBookVO=dao.selectBoardBook(bo_no);
+		if(boardBookVO==null) {
+			throw new BoardException();
+		}
+		return boardBookVO;
 	}
 
 	@Override
@@ -37,15 +41,33 @@ public class BoardBookServiceImpl implements IBoardBookService {
 	}
 
 	@Override
-	public ServiceResult deleteBoardBook(Long bo_no) {
-		// TODO Auto-generated method stub
-		return null;
+	public ServiceResult deleteBoardBook(BoardBookVO bo_no) {
+		ServiceResult res=ServiceResult.INVALIDPASSWORD;
+		BoardBookVO boardBookVO= selectBoardBook(bo_no.getBo_no());
+		if(boardBookVO.getBo_pass().equals(bo_no.getBo_pass())) {
+			int cnt=dao.deleteBoardBook(bo_no.getBo_no());
+			if(cnt>0) {
+				res=ServiceResult.OK;
+			}else {
+				res=ServiceResult.FAILED;
+			}
+		}
+		return res;
 	}
 
 	@Override
 	public ServiceResult updateBoardBook(BoardBookVO board) {
-		// TODO Auto-generated method stub
-		return null;
+		ServiceResult res=ServiceResult.INVALIDPASSWORD;
+		BoardBookVO boardBookVO= selectBoardBook(board.getBo_no());
+		if(boardBookVO.getBo_pass().equals(board.getBo_pass())) {
+			int cnt=dao.updateBoardBook(board);
+			if(cnt>0) {
+				res=ServiceResult.OK;
+			}else {
+				res=ServiceResult.FAILED;
+			}
+		}
+		return res;
 	}
 
 }
