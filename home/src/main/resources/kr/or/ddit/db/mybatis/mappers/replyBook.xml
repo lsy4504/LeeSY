@@ -22,4 +22,14 @@
 		where rowno between
 		#{startRow} and #{endRow}
 	</select>
+	<insert id="insertReply" parameterType="replyBookVO">
+		INSERT INTO REPLYBOOK (
+		REP_NO,BO_NO,rep_writer,
+		REP_IP,REP_PASS,REP_CONTENT,
+		REP_DATE) VALUES (
+		replybook_seq.nextval,#{bo_no},#{rep_writer},
+		#{rep_ip},#{rep_pass},#{rep_content},
+		sysdate
+		)
+	</insert>
 	</mapper>

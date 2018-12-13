@@ -24,8 +24,10 @@ public class ReplyServiceImpl implements IReplyService {
 
 	@Override
 	public ServiceResult insertReplyBook(ReplyBookVO replyBook) {
-		// TODO Auto-generated method stub
-		return null;
+		ServiceResult res=ServiceResult.FAILED;
+		int cnt=dao.insertReply(replyBook);
+		if(cnt>0)res=ServiceResult.OK;
+		return res;
 	}
 
 	@Override

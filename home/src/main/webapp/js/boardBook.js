@@ -9,21 +9,21 @@ function paging(page) {
 			success :function(resp){
 				var html="";
 				$.each(resp.dataList,function(idx,boardBook){
-				html+="<tr>";
-				html+="<td>	NO."+boardBook.bo_no+"</td>";
-				html+="<td name='writer'>"+boardBook.bo_writer+"</td>                                                                      ";
-				html+="<td>"+boardBook.bo_date+"</td>                                                                                    ";
-				html+="<td><span id='updateBoard' bono='"+boardBook.bo_no+"' data-toggle='modal' class='boardUpdateBtn'>[수정]</span></td>  ";
-				html+="<td><span id='deleteBoard'>[삭제]</span></td>	                                                                   ";
-				html+="</tr>                                                                                                               ";
-				html+="<tr id='"+boardBook.bo_no+"'>                                                                                        ";
-				html+=" <td  class='.content'>"+boardBook.bo_content+"</td>                                                                ";
-				html+=" </tr>	                                                                                                           ";
-				html+="<tr>                                                     ";
-				html+="<td >                           ";
-				html+="	<input type='button' id='replyInset' value='답글 달기' core='"+boardBook.bo_no+"'> ";
-				html+="</td>                                                    ";
-				html+="</tr>	                                                ";
+				html+="	<div class='grid-1-5' id='"+boardBook.bo_no+"' >";
+				html+="	<h2>NO."+boardBook.bo_no+"</h2>";
+				html+="	<h3><span class='uppercase' name='writer'>"+boardBook.bo_writer+"</span></h3>";
+				html+="	<p class='content'>"+boardBook.bo_content+" </p>";
+				html+="	<ul>";
+				html+="	<li>"+boardBook.bo_date +"</li>";
+				html+="	<li><span id='updateBoard' bono='"+boardBook.bo_no+"' data-toggle='modal' class='boardUpdateBtn'>[수정]</span>";
+				html+="	</li>";
+				html+="	<li><span id='deleteBoard' bono='"+boardBook.bo_no+"' data-toggle='modal' class='boardUpdateBtn'>[삭제]</span>";
+				html+="	</li>";
+				html+="	<li><span id='replyList' bono='"+boardBook.bo_no+"' class='button'>댓글 보기</span>";
+				html+="	</li>";
+				html+="	</ul>";
+				html+="	<div id='re_"+boardBook.bo_no +"'>";
+				html+="	</div></div>";
 				})
 				$("#boardBookTable").html(html);
 				$("#page2").html(resp.pagingHTML);
@@ -84,13 +84,18 @@ $(function(){
 	});
 	$("#updateBtn").on("click",function(){
 		var bo_no=modalForm1.find("#bo_no").val();
+		alert(bo_no)
 		var bo_pass=modalForm1.find("#bo_pass").val();
 		alert(modalForm1.find("#bo_content").text());
 		var bo_content=modalForm1.find("#bo_content").val();
-		alert(bo_content)
+		var writer=modalForm1.find("#bo_writer").val();
+		alert(writer)
 		updaateForm.find("[name=bo_no]").val(bo_no);
 		updaateForm.find("[name=bo_pass]").val(bo_pass);
 		updaateForm.find("[name=bo_content]").text(bo_content);
+		updaateForm.find("[name=rep_content]").text(bo_content);
+		updaateForm.find("[name=rep_writer]").val(writer);
+		updaateForm.find("[name=rep_pass]").val(bo_pass);
 		modalForm1[0].reset();
 		updaateForm[0].reset();
 		updateModal.modal("hide");
@@ -139,7 +144,7 @@ $(function(){
 				html+="</ul>";
 			});
 			}
-			html+="<ul><li><input type='button' name='rep_insert' value='등록'></li>";
+			html+="<ul><li><input type='button' class='rep_insert' value='등록' bono='"+resp.searchVO.bo_no+"'></li>";
 			html+="</ul>";
 			alert(resp.dataList);
 			alert(resp.searchVO.bo_no);
@@ -147,6 +152,12 @@ $(function(){
 			
 			
 		}
+	});
+	boardBookTable.delegate(".rep_insert","click",function(){
+		var bono=$(this).attr('bono');
+		modalForm1.find("[name=bo_no]").val(bono);
+		updaateForm.attr("action",$.getContextPath()+"/replybook/replyInsert.do");
+		updateModal.modal("show")
 	});
 	
 	

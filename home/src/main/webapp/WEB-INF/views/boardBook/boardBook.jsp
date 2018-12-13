@@ -101,8 +101,13 @@ $.getContextPath = function(){
 			</tr>
 			<tr>
 				<td>
+				<textarea hidden="hidden" rows="10" cols="50"
+						name="rep_content"></textarea>
+				 <input type="hidden"  name="rep_pass">
+				 <input type="hidden"  name="rep_writer">
 				 <input type="hidden"  name="rep_no">
-				 <input type="hidden" value="${board.bo_no }" name="bo_no"></td>
+				 <input type="hidden"  name="rep_ip" value="${pageContext.request.remoteAddr }">
+				 <input type="hidden" name="bo_no"></td>
 			</tr>
 		</tbody>
 			<tfoot>
@@ -128,13 +133,13 @@ $.getContextPath = function(){
       </div>
       <div class="modal-body">
       <form onsubmit="retunr false;" id="modalForm1">
-       작성자:<input type="text" id="bo_writer">
-        비밀번호:<input type="password" id="bo_pass">
+       <input type="text" id="bo_writer" placeholder="Writer">
+        <input type="password" id="bo_pass" placeholder="Password">
        
         <input type="hidden" id="rep_no">
         <textarea rows="10" cols="50"
-						name="bo_content" id="bo_content"></textarea>
-        <input type="hidden" value="${board.bo_no }" id="bo_no">
+						name="bo_content" id="bo_content" placeholder="Content"></textarea>
+        <input type="hidden"  name="bo_no" id="bo_no">
       </form>
       
       </div>

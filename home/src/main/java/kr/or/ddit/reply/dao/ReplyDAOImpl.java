@@ -13,7 +13,12 @@ public class ReplyDAOImpl implements IReplyDAO {
 	SqlSessionFactory sqlSessionFactory=CustomSqlSessionFactoryBuilder.getSqlSessionFactory();
 	@Override
 	public int insertReply(ReplyBookVO reply) {
-		return 0;
+		try (SqlSession session = sqlSessionFactory.openSession();) {
+			IReplyDAO mapper = session.getMapper(IReplyDAO.class);
+			int cnt=mapper.insertReply(reply);
+			if(cnt>0)session.commit();
+			return cnt;
+		}
 	}
 
 	@Override
