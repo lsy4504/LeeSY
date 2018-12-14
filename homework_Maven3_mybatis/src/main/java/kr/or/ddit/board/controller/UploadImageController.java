@@ -16,6 +16,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilterWrapper;
 
 import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.mvc.annotation.CommandHandler;
@@ -34,9 +35,12 @@ public class UploadImageController{
 				req.getServletContext().getRealPath(saveFolderUrl));
 		
 		if(!folder.exists()) folder.mkdirs();
-		
-		if (req instanceof FileUploadReaquestWrapper) {
-			FileItem fileItem = ((FileUploadReaquestWrapper) req).getFileItem("upload");
+		HttpServletRequest request=req;
+		if(req instanceof XssEscapeServletFilterWrapper) {
+			request=(HttpServletRequest) ((XssEscapeServletFilterWrapper) req).getRequest();
+		}
+		if (request instanceof FileUploadReaquestWrapper) {
+			FileItem fileItem = ((FileUploadReaquestWrapper) request).getFileItem("upload");
 			
 			resp.setContentType(MimeType.JSON.getMimeType());
 			FileUploadVO vo = new FileUploadVO();
