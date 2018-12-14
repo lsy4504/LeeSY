@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean class="kr.or.ddit.dao.SampleOracleDAO" id="sampleOracleDAO" ></bean>
+<bean class="kr.or.ddit.dao.SampleMysqlDAO" id="sampleMysqlDAO"></bean>
+<bean class="kr.or.ddit.service.SampleService" id="sampleService" >
+	<property name="sampleDAO" ref="sampleOracleDAO" ></property>
+		
+</bean>
+</beans>
