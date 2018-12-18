@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.board.dao.IBoardDAO">
+	<select id="selectTotalRecord" resultType="long"
+		parameterType="pagingVO">
+		select count(*)
+		from board
+		<include refid="search" />
+	</select>
+	<sql id="search">
+		<where>
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(searchWord)">
+				<if test="searchType.equals('writer')">
+					board_writer like
+					'%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('title')">
+					bo_title like '%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('content')">
+					bo_content like '%'||#{searchWord}||'%'
+				</if>
+				<if test="searchType.equals('all')">
+					board_writer like '%'||#{searchWord}||'%'
+					OR
+					bo_title like
+					'%'||#{searchWord}||'%'
+				</if>
+			</if>
+		</where>
+	</sql>
+	<select id="selectBoardList" resultType="boardVO"
+		parameterType="pagingVO">
+		SELECT b.*
+		from(
+		SELECT ROWNUM rowno,A.*
+		FROM (SELECT bo_no,
+		LPAD('RE:',3*(level-1),' ')||bo_title BO_TITLE,
+		board_writer, bo_date, bo_hit,bo_rcmd, LEVEL BO_LEVEL
+		FROM
+		board
+
+		<include refid="search" />
+		START WITH BO_PARENT IS NULL
+		CONNECT BY PRIOR BO_NO=BO_PARENT
+		ORDER
+		SIBLINGS BY bo_no desc
+		)A)b
+		where b.rowno between
+		#{startRow} and
+		#{endRow}
+	</select>
+	<resultMap type="boardVO" id="boardMap" autoMapping="true">
+		<id column="BOARD_NO" property="bo_no" />
+		<collection property="pdsList" ofType="pdsVO"
+			javaType="java.util.List" autoMapping="true" />
+
+	</resultMap>
+	<select id="selectBoard" parameterType="Long"
+		resultMap="boardMap">
+
+		select board.bo_no BOARD_NO,board_writer,bo_pass,
+		bo_ip,bo_mail,bo_title,
+		bo_content,bo_date,bo_hit,bo_rcmd
+		,pds_no,pds_savename,pds_filename,pds_size,pds_fancysize
+		,pds_mime
+		FROM
+		board left outer join pds on(board.bo_no=pds.bo_no )
+		where
+		board.bo_no=#{bo_no}
+
+
+
+	</select>
+	<update id="incrementHit" parameterType="Long">
+		update board set
+		bo_hit=bo_hit+1 where bo_no=#{data}
+
+	</update>
+	<insert id="insertBoard" parameterType="boardVO">
+		<selectKey order="BEFORE" keyProperty="bo_no"
+			resultType="Long">
+			select board_seq.NEXTVAL
+			from dual
+		</selectKey>
+		INSERT INTO board (
+		bo_no,board_writer,
+		bo_pass,bo_ip,
+		bo_mail,bo_title,
+		bo_content,bo_date,
+		bo_hit,bo_rcmd
+		<if test="bo_parent>0">
+			,bo_parent
+		</if>
+		) VALUES (
+		#{bo_no},#{board_writer},
+		#{bo_pass},#{bo_ip},
+		#{bo_mail},#{bo_title},
+		#{bo_content},sysdate,
+		0,0
+		<if test="bo_parent>0">
+			,#{bo_parent,jdbcType=NUMERIC}
+		</if>
+		)
+
+	</insert>
+	<update id="updateBoard" parameterType="boardVO">
+		UPDATE board
+		<set>
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_mail)">
+				bo_mail =#{bo_mail},
+			</if>
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_title)">
+				bo_title =#{bo_title},
+			</if>
+			<if
+				test="@org.apache.commons.lang3.StringUtils@isNotBlank(bo_content)">
+				bo_content =#{bo_content}
+			</if>
+		</set>
+		WHERE
+		bo_no =#{bo_no}
+
+	</update>
+	<delete id="deleteBoard" parameterType="Long">
+		DELETE FROM board
+		WHERE bo_no IN(
+		SELECT bo_no
+		FROM board
+		START WITH bo_no=#{bo_no}
+		connect by prior bo_no=bo_parent
+		)
+	</delete>
+	<update id="incrementRcmd" parameterType="Long">
+	update board
+	set bo_rcmd=bo_rcmd+1
+	where bo_no=#{data}
+		
+	</update>
+
+</mapper>
