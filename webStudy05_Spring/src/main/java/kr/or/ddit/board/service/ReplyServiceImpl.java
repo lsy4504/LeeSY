@@ -2,16 +2,20 @@ package kr.or.ddit.board.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.BoardException;
 import kr.or.ddit.board.dao.IReplyDAO;
-import kr.or.ddit.board.dao.ReplyDAOImpl;
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ReplyVO;
-
+@Service
 public class ReplyServiceImpl implements IReplyService{
-	IReplyDAO replyDAO=new ReplyDAOImpl();
+	@Inject
+	IReplyDAO replyDAO;
 	@Override
 	public ServiceResult createReply(ReplyVO reply) {
 		int cnt=replyDAO.insertReply(reply);

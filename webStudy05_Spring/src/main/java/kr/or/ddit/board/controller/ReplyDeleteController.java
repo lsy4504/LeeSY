@@ -5,39 +5,35 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.IReplyService;
 import kr.or.ddit.board.service.ReplyServiceImpl;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.ReplyVO;
 import kr.or.ddit.web.calculate.MimeType;
-@CommandHandler
+@Controller
 public class ReplyDeleteController  {
-	@URIMapping(value="/reply/replyDelete.do" , method=HttpMethod.GET)
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		ReplyVO reply= new ReplyVO();
-		System.out.println("제발 여기까지만 와라 ..");
-		resp.setContentType(MimeType.JSON.getMimeType());
+	@Inject
+	IReplyService service;
+	@RequestMapping(value="/reply/replyDelete.do" , method=RequestMethod.POST)
+	public String process(ReplyVO reply,Model model) {
 		Map<String, String> errors=new HashMap<String, String>();
-		try {
-			BeanUtils.populate(reply, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
 		boolean valid=validate(errors,reply);
+		String view= "jsonView";
 		if(valid) {
-			IReplyService service= new ReplyServiceImpl();
 			ServiceResult res= service.removeReply(reply);
 			switch (res) {
 			case OK:
@@ -51,11 +47,8 @@ public class ReplyDeleteController  {
 			errors.put("message", "검증실패");
 			
 		}
-		if(valid) {
-		ObjectMapper mapper =new ObjectMapper();
-		mapper.writeValue(resp.getWriter(), errors);
-		}
-		return null;
+		model.addAttribute("errors", errors);
+		return view;
 	}
 
 	private boolean validate(Map<String, String> errors, ReplyVO reply) {

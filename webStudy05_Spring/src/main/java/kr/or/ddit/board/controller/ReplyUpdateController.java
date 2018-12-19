@@ -1,40 +1,28 @@
 package kr.or.ddit.board.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.IReplyService;
-import kr.or.ddit.board.service.ReplyServiceImpl;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.ReplyVO;
-@CommandHandler
+@Controller
 public class ReplyUpdateController {
-	@URIMapping(value="/reply/replyUpdate.do", method=HttpMethod.GET)
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		ReplyVO reply=new ReplyVO();
+	@Inject
+	IReplyService service;
+	
+	@RequestMapping(value="/reply/replyUpdate.do", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+	public String process(ReplyVO reply){
 		Map<String, String> errors=new HashMap<>();
-		try {
-			BeanUtils.populate(reply, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
 		boolean valid=validate(errors, reply);
 		if(valid) {
-			IReplyService service=new ReplyServiceImpl();
 			ServiceResult result= service.modifyReply(reply);
 			switch (result) {
 			case OK:
@@ -47,9 +35,6 @@ public class ReplyUpdateController {
 				errors.put("message", "비밀번호 실패 ㅠㅠ");
 			}
 		}
-		ObjectMapper mapper= new ObjectMapper();
-		mapper.writeValue(resp.getWriter(), errors);
-		
 		return null;
 		
 	}

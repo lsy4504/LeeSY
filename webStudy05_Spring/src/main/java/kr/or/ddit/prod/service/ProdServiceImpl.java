@@ -2,26 +2,23 @@ package kr.or.ddit.prod.service;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.stereotype.Service;
 
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.prod.dao.IProdDAO;
-import kr.or.ddit.prod.dao.ProdDAOImpl;
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ProdVO;
-
+@Service
 public class ProdServiceImpl implements IProdService {
-	private IProdDAO dao;
-	public static IProdService service;
-	private ProdServiceImpl() {
-		dao=ProdDAOImpl.getInstance();
-	}
-	public static IProdService getInstance() {
-		if(service==null) {
-			service= new ProdServiceImpl();
-		}
-		return service;
+	IProdDAO dao;
+	@Required
+	@Inject
+	public void setDao(IProdDAO dao) {
+		this.dao = dao;
 	}
 	@Override
 	public ServiceResult createProd(ProdVO prod) {

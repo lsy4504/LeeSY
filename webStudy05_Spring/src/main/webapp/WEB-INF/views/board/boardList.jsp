@@ -168,7 +168,7 @@
 			</tr>
 		</tfoot>
 	</table>
-	<form id="searchForm" action="" method="post" name="searchForm"> 
+	<form id="searchForm" action="<c:url value='/board/boardList.do' />" method="post" name="searchForm"> 
 		<input type="hidden" name="page">
 		<select name="searchType">
 			<option value="all">전체</option>

@@ -20,10 +20,17 @@
 			논리적인 view name으로 실제 view layer를 검색하는 역할.	
 	-->
 	<annotation-driven />
-	<context:component-scan base-package="kr.or.ddit.prod.controller"></context:component-scan>
+	<!--정적 자원처리  -->
+	<default-servlet-handler/>
+	<context:component-scan base-package="kr.or.ddit" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+		<!--Controller의 어노테이션을 갖고있는 클래스들을 배제  -->
+	</context:component-scan>
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" id="IRVR"
 		p:prefix="/WEB-INF/views/"
 		p:suffix=".jsp"
+		
 	/>
 	<!-- 필터: MultipartResolver
 	wrapper : MultipartHttpServletRequest
@@ -31,4 +38,13 @@
 	<beans:bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver" 
 	
 	/>
+	
+	<beans:bean  class="org.springframework.web.servlet.view.BeanNameViewResolver"
+		p:order="1"
+	/>
+	<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"></beans:bean>
+	<!--비슷한 영역을 지원하는 전략을 여러개 등록하는 경우,
+		반드시 우선순위(order)를 설정해야 함.
+	  -->
+	
 </beans:beans>

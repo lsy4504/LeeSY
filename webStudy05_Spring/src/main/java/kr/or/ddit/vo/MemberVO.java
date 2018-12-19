@@ -1,5 +1,6 @@
 package kr.or.ddit.vo;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +11,9 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.Alias;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.validator.rules.constraints.Length;
@@ -58,6 +61,13 @@ public class MemberVO  implements Serializable, HttpSessionBindingListener{
 	//구매상품목록
 	private	List<ProdVO> prodList;
 	private byte[] mem_img;
+	private MultipartFile mem_image;
+	public void setMem_image(MultipartFile mem_image) throws IOException {
+		this.mem_image = mem_image;
+		if(mem_image!=null && StringUtils.isNotBlank(mem_image.getOriginalFilename())){
+			this.mem_img=mem_image.getBytes();
+		}
+	}
 	
 	
 	public String getMem_imgToBase64(){

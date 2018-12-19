@@ -1,75 +1,58 @@
 package kr.or.ddit.member.controller;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
-import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
-import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
 import kr.or.ddit.member.service.IMemberSerivce;
 import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.vo.MemberVO;
-@CommandHandler
+@Controller
+@RequestMapping(value="/member/memberInsert.do")
 public class MemberInsertController {
+	@Inject
+	IMemberSerivce serivce;
 	
-	
-	@URIMapping(value="/member/memberInsert.do",method=HttpMethod.GET)
-	public String doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	@RequestMapping(method=RequestMethod.GET)
+	public String doGet(){
 		String view="member/memberForm";
 		return view;
 	}
-	@URIMapping(value="/member/memberInsert.do",method=HttpMethod.POST)
-	public String doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		IMemberSerivce serivce=MemberServiceImpl.getInstance();
-		MemberVO member= new MemberVO();
-		req.setAttribute("member", member);
-		try {
-			BeanUtils.populate(member, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			throw new CommonException(e);
-		}
+	@RequestMapping(method=RequestMethod.POST)
+	public String doPost(@ModelAttribute("member")MemberVO member,
+			
+			Model model,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		model.addAttribute("member", member);
 		
 		String message=null;
 		String gopage="member/memberForm";
 		Map<String,List<CharSequence>> errors=new HashMap<>();
-		req.setAttribute("errors", errors);
+		model.addAttribute("errors", errors);
 		GeneralValidator validator=new GeneralValidator();
 		boolean valid= validator.validate(member, errors, InsertGroup.class);
 		System.err.println(errors.size());
 		if(valid){
-			
-			if(req instanceof FileUploadReaquestWrapper ) {
-				//경로, 이름,
-				System.out.println("아니시밣 제발1");
-			FileItem fileItem=  ((FileUploadReaquestWrapper) req).getFileItem("mem_image");
-			System.out.println(fileItem.getSize());
-			if(fileItem!=null) {
-				member.setMem_img(fileItem.get()); 
-				System.out.println("아니시밣 제발");
-			}
-				
-				
-				
-				
-			}
 			ServiceResult result=serivce.registMember(member);
 			switch(result){
 			case PKDUPLICATED:
@@ -83,13 +66,11 @@ public class MemberInsertController {
 				break;
 			}
 			req.setAttribute("message", message);
-		}else{
-			
 		}
-		return gopage;
+			return gopage;
+		}
 		
 	
-	}
 	private boolean validate(MemberVO member, Map<String,String> errors){
 		boolean valid= true;
 		System.out.print("비번검증");

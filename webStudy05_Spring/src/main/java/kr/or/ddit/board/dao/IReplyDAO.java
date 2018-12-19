@@ -2,6 +2,8 @@ package kr.or.ddit.board.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ReplyVO;
 
@@ -18,6 +20,7 @@ import kr.or.ddit.vo.ReplyVO;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@Repository
 public interface IReplyDAO {
 	
 	/**

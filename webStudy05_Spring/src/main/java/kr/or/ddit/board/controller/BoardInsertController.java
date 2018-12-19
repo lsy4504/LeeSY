@@ -1,61 +1,46 @@
 package kr.or.ddit.board.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.fileupload.FileItem;
-
-import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilterWrapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.ServiceResult;
-import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.filter.wrapper.FileUploadReaquestWrapper;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.validator.GeneralValidator;
 import kr.or.ddit.validator.InsertGroup;
 import kr.or.ddit.vo.BoardVO;
 
-@CommandHandler
+@Controller
+@RequestMapping(value="/board/boardInsert.do")
 public class BoardInsertController  {
-	IBoardService service=new BoardServiceImpl();
-	@URIMapping(value="/board/boardInsert.do", method=HttpMethod.GET)
-	public String getProcess(HttpServletRequest req, HttpServletResponse resp) {
+	@Inject
+	IBoardService service;
+	@RequestMapping()
+	public String getProcess() {
 		return "board/boardForm";
 	}
-	@URIMapping(value="/board/boardInsert.do", method=HttpMethod.POST)
-	public String postProcess(HttpServletRequest req, HttpServletResponse resp) {
-		System.out.println("우야야야야야");
-		BoardVO board=new BoardVO();
-		req.setAttribute("board", board);
+	@RequestMapping(method=RequestMethod.POST)
+	public String postProcess(BoardVO board,Model model
+			
+			) {
+		model.addAttribute("board", board);
 		Map<String, List<CharSequence>> errors= new HashMap<String, List<CharSequence>>();
-		req.setAttribute("errors", errors);
-		try {
-			BeanUtils.populate(board, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
+		model.addAttribute("errors", errors);
+		
 		GeneralValidator validator = new GeneralValidator();
 		
 		boolean valid=validator.validate(board, errors, InsertGroup.class);
 		if (valid) {
-			HttpServletRequest request=req;
-			if(req instanceof XssEscapeServletFilterWrapper) {
-				request=(HttpServletRequest) ((XssEscapeServletFilterWrapper) req).getRequest();
-			}
-			if(request instanceof FileUploadReaquestWrapper) {
-				List<FileItem> fileItems= ((FileUploadReaquestWrapper) request).getFileItems("bo_file");
-				board.setItemList(fileItems);
 				
-			}
 			
 			ServiceResult res=service.createBoard(board);
 			switch (res) {

@@ -180,7 +180,11 @@ $(function() {
 				<td>작성자 <input type="text" name="rep_writer" >
 				</td>
 				<td>비밀번호<input type="password" name="rep_pass">
+					<input type="hidden" value="${pageContext.request.remoteAddr }"
+			name='rep_ip'>
+			지렁아 이부분 추가해줘<
 				</td>
+				
 			</tr>
 			<tr>
 				<td colspan="2"><textarea rows="10" cols="50"
@@ -192,6 +196,7 @@ $(function() {
 <!-- 				<input type="submit" value="수정" onclick="javascript:intercept('/reply/replyUpdate.do')"> -->
 				 <input type="hidden"  name="rep_no">
 				 <input type="hidden" value="${board.bo_no }" name="bo_no"></td>
+				 
 			</tr>
 		</table>
 	</form>

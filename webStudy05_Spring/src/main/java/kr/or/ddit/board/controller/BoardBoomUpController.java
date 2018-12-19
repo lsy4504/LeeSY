@@ -5,37 +5,40 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 
-@CommandHandler
+@Controller
 public class BoardBoomUpController  {
-	IBoardService service= new BoardServiceImpl();
-	Map<String, String> boomMap=new HashMap<>();
-	@URIMapping(value="/board/boomUp.do", method=HttpMethod.POST)
-	public String boomUp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		String bo_noStr=req.getParameter("bo_no");
-		if(!StringUtils.isNumeric(bo_noStr)) {
-			resp.sendError(resp.SC_BAD_REQUEST);
-		}
-		ServiceResult res=service.boomUp(Long.parseLong(bo_noStr));
+	@Inject
+	IBoardService service;
+	@ResponseBody
+	@RequestMapping(value="/board/boomUp.do",produces="application/json;charset=UTF-8")
+	public Map<String, String> boomUp(@RequestParam(name="bo_no",required=true) long bo_no,
+			RedirectAttributes redirectAttributes) throws IOException {
+		Map<String, String> boomMap=new HashMap<>();
+		ServiceResult res=service.boomUp(bo_no);
 		
 		switch (res) {
 		case OK:
-			HttpSession session= req.getSession();
-			session.setAttribute("check", "true");
+			redirectAttributes.addFlashAttribute("check", "true");
 			
 			boomMap.put("flag", "true");
 			break;
@@ -44,17 +47,7 @@ public class BoardBoomUpController  {
 			boomMap.put("flag", "false");
 			break;
 		}
-		
-		ObjectMapper mapper=new ObjectMapper();
-		try(
-				PrintWriter out = resp.getWriter();
-				) {
-			
-			mapper.writeValue(out, boomMap);
-		} 
-		
-		
-		return null;
+		return boomMap;
 		
 	}
 }

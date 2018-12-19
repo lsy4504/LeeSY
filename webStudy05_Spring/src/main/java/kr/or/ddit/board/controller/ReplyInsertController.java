@@ -1,44 +1,31 @@
 package kr.or.ddit.board.controller;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.inject.Inject;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.IReplyService;
-import kr.or.ddit.board.service.ReplyServiceImpl;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.ReplyVO;
-import kr.or.ddit.web.calculate.MimeType;
-@CommandHandler
+@Controller
 public class ReplyInsertController  {
-	@URIMapping(value="/reply/replyInsert.do" , method=HttpMethod.GET)
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		ReplyVO reply = new ReplyVO();
-		resp.setContentType(MimeType.JSON.getMimeType());
-
-		try {
-			BeanUtils.populate(reply, req.getParameterMap());
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		reply.setRep_ip(req.getRemoteAddr());
+	@Inject
+	IReplyService service;
+	@RequestMapping(value="/reply/replyInsert.do" , method=RequestMethod.POST)
+	public String process(@ModelAttribute("reply")ReplyVO reply,Model model) {
+		//ip폼에 추가해줄것..
 		Map<String, String> errors = new LinkedHashMap<>();
 		boolean valid = validate(errors, reply);
 		if(valid) {
-			IReplyService service = new ReplyServiceImpl();
 			ServiceResult res= service.createReply(reply);
 			switch (res) {
 			case OK:
@@ -53,10 +40,10 @@ public class ReplyInsertController  {
 			errors.put("message", "검증실패");
 			
 		}
-		ObjectMapper mapper =new ObjectMapper();
-		mapper.writeValue(resp.getWriter(), errors);
+		model.addAttribute("errors",errors);
 
-		return null;
+
+		return "jsonView";
 	}
 
 	private boolean validate(Map<String, String> errors, ReplyVO reply) {

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.type.Alias;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,14 +15,14 @@ import lombok.NoArgsConstructor;
 @Alias("pdsVO")
 public class PdsVO implements Serializable {
 	
-	public PdsVO(FileItem fileItem) {
+	public PdsVO(MultipartFile fileItem) {
 		super();
 		this.item = fileItem;
 		String saveName = UUID.randomUUID().toString();// 파일 가 이름 생성
 		
 		setPds_mime(fileItem.getContentType());
 		setPds_size(fileItem.getSize());
-		setPds_filename(fileItem.getName());
+		setPds_filename(fileItem.getOriginalFilename());
 		setPds_savename(saveName);
 		setPds_fancysize(FileUtils.byteCountToDisplaySize(fileItem.getSize()));
 	}
@@ -32,6 +33,6 @@ public class PdsVO implements Serializable {
 	private String pds_mime;
 	private Long pds_size;
 	private String pds_fancysize;
-	private FileItem item;
+	private MultipartFile item;
 	
 }

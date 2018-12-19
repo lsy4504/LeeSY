@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.Alias;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.validator.rules.constraints.NotBlank;
 import lombok.Data;
@@ -35,26 +37,46 @@ public class BoardVO implements Serializable {
 	private Long[] delFiles;
 	private Integer  bo_level;
 	private Long bo_parent;
+	
 
 	private List<FileItem> itemList;
+	private MultipartFile[] bo_file;
+	
 
-	public void setItemList(List<FileItem> fileItems) {
-		this.itemList = fileItems;
-		if (fileItems != null) {
-
-			List<PdsVO> pdsList = null;
-			pdsList = new ArrayList<PdsVO>();
-			for (FileItem fileItem : fileItems) {
-
-				
-				
-				pdsList.add(new PdsVO(fileItem));
-
+	
+	public void setBo_file(MultipartFile[] bo_file) {
+		this.bo_file = bo_file;
+		List<PdsVO> pdsList = null;
+		if(bo_file!=null){
+			pdsList = new ArrayList<>();
+			for (MultipartFile item : bo_file) {
+				if(StringUtils.isBlank(item.getOriginalFilename()))continue;
+				pdsList.add(new PdsVO(item));
 			}
-			this.pdsList = pdsList;
-
 		}
+		this.pdsList = pdsList;
+		
+	}
+	public void setItemList(List<FileItem> fileItems) {
+//		this.itemList = fileItems;
+//		if (fileItems != null) {
+//
+//			List<PdsVO> pdsList = null;
+//			pdsList = new ArrayList<PdsVO>();
+//			for (FileItem fileItem : fileItems) {
+//
+//				
+//				
+//				pdsList.add(new PdsVO(fileItem));
+//
+//			}
+//			this.pdsList = pdsList;
+//
+//		}
 
 	}
+
+
+
 
 }

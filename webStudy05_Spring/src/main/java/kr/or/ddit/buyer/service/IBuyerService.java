@@ -2,6 +2,8 @@ package kr.or.ddit.buyer.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.vo.BuyerVO;
 import kr.or.ddit.vo.PagingInfoVO;

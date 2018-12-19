@@ -10,15 +10,10 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -28,22 +23,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.prod.dao.IOtherDAO;
-import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
-import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.ProdVO;
 @Controller
 @RequestMapping("/prod/prodUpdate.do")
 public class ProdUpdateController{
 	@Inject
 	WebApplicationContext container;
-	IOtherDAO other=OtherDAOImpl.getInstance();
-	IProdService service = ProdServiceImpl.getInstance();
+	@Inject
+	IProdService service;
+	@Inject
+	IOtherDAO other;
+
 	String prodImagesUrl="/prodImages";
 	File prodImagesfolder;
 	@PostConstruct
@@ -76,7 +70,6 @@ public class ProdUpdateController{
 						 }
 						 prod.setProd_img(savename);
 				}//객채가 맞는지 확인
-				IProdService service=ProdServiceImpl.getInstance();
 				ServiceResult result= service.modifyProd(prod);
 				switch (result) {
 				case OK:

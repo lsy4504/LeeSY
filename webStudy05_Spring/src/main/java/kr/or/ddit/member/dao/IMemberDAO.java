@@ -2,7 +2,7 @@ package kr.or.ddit.member.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingInfoVO;
@@ -20,6 +20,7 @@ import kr.or.ddit.vo.PagingInfoVO;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@Repository
 public interface IMemberDAO {
 	/**
 	 * 	회원정보 상세 조회

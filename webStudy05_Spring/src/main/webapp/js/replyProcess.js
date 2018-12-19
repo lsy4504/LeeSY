@@ -6,8 +6,8 @@
 	 function showResponse(resp, statusText, xhr, $form)  {
 			pagingArea=$("#pagingArea");
 			listBody=$("#listBody");
-        	if(resp.code){
-        		alert(resp.message);
+        	if(resp.errors){
+        		alert(resp.errors.message);
         		return;
         	}
         	

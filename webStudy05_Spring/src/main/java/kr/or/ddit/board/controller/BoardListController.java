@@ -1,65 +1,53 @@
 package kr.or.ddit.board.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import kr.or.ddit.board.service.BoardServiceImpl;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.mvc.annotation.CommandHandler;
-import kr.or.ddit.mvc.annotation.URIMapping;
-import kr.or.ddit.mvc.annotation.URIMapping.HttpMethod;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PagingInfoVO;
-@CommandHandler
+@Controller
+@RequestMapping(value="/board/boardList.do")
 public class BoardListController {
-	@URIMapping(value="/board/boardList.do",method=HttpMethod.GET)
-	public String process(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		PagingInfoVO<BoardVO> pagingVO=new PagingInfoVO<>();
-		//암뉭부헤부
-		IBoardService service= new BoardServiceImpl();
-		String searchWord=req.getParameter("searchWord");
-		String searchType=req.getParameter("searchType");
-		pagingVO.setSearchType(searchType);
-		pagingVO.setSearchWord(searchWord);
+	@Inject
+	IBoardService service;
+	@RequestMapping()
+	public String process(@ModelAttribute("pagingVO")PagingInfoVO<BoardVO> pagingVO,@RequestParam(required=true,defaultValue="1",name="page")int currentPage
+			,Model model
+			) throws IOException, ServletException {
 		long totalRecord=service.retriveBoardCount(pagingVO);
-		int currentPage=1;
-		String page= req.getParameter("page");
-		if(StringUtils.isNumeric(page)) {
-			currentPage=Integer.parseInt(page);
-			
-		}
-		System.out.println(page);
+		System.out.println(totalRecord);
 		pagingVO.setTotalRecord(totalRecord);
 		pagingVO.setCurrentPage(currentPage);
-		
 		List<BoardVO> boardList= service.retriveBoardList(pagingVO);
 		pagingVO.setDataList(boardList);
-		String accept= req.getHeader("Accept");
-		if(accept.contains("json")) {
-			System.out.println("혹시옵닊라?/");
-			ObjectMapper mapper=new ObjectMapper();
-			resp.setContentType("application/json;charset=UTF-8");
-			PrintWriter out=resp.getWriter();
-			mapper.writeValue(out, pagingVO);
-			return null;
-		}
-		req.setAttribute("pagingVO", pagingVO);
+		
+		model.addAttribute("pagingVO", pagingVO);
 		
 		
 		return "board/boardList";
 	}
-	@URIMapping(value="/board/boardList.do", method=HttpMethod.POST)
-	public String postProcess(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		return process(req, resp);
+	@ResponseBody
+	@RequestMapping(produces="application/json;charset=UTF-8")
+	public PagingInfoVO<BoardVO> postProcess(@ModelAttribute("pagingVO")PagingInfoVO<BoardVO> pagingVO,@RequestParam(required=true,defaultValue="1",name="page")int currentPage
+			,Model model) throws IOException, ServletException {
+		long totalRecord=service.retriveBoardCount(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		pagingVO.setCurrentPage(currentPage);
+		List<BoardVO> boardList= service.retriveBoardList(pagingVO);
+		pagingVO.setDataList(boardList);
+		return pagingVO;
+		
 	}
 	
 

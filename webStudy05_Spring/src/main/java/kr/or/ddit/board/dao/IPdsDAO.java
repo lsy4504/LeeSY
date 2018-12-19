@@ -1,7 +1,7 @@
 package kr.or.ddit.board.dao;
 
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
 
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PdsVO;
@@ -19,6 +19,7 @@ import kr.or.ddit.vo.PdsVO;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@Repository
 public interface IPdsDAO {
 	/**
 	 * 
@@ -35,7 +36,7 @@ public interface IPdsDAO {
 	 * @param session TODO
 	 * @return
 	 */
-	public int insertPdsList( BoardVO board, SqlSession session);
+	public int insertPdsList( BoardVO board);
 	
 	/**
 	 * 다운로드용으로 사용될 조회 메소드
@@ -49,7 +50,7 @@ public interface IPdsDAO {
 	 * @param session TODO
 	 * @return row count 
 	 */
-	public int deletePds(long pds_no, SqlSession session);
+	public int deletePds(long pds_no);
 	
 	/**
 	 * 여러객체를 한번에삭제
@@ -57,6 +58,6 @@ public interface IPdsDAO {
 	 * @param session
 	 * @return
 	 */
-	public int deletePdses(BoardVO board, SqlSession session);
+	public int deletePdses(BoardVO board);
 	
 }

@@ -2,24 +2,23 @@ package kr.or.ddit.member.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.stereotype.Service;
+
 import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.member.dao.IMemberDAO;
-import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingInfoVO;
-
+@Service
 public class MemberServiceImpl  implements IMemberSerivce{
 	IMemberDAO memeberDAO;
-	static IMemberSerivce memberSerivce;
-	private MemberServiceImpl() {
-		memeberDAO=MemberDAOImpl.getInstance();
-	}
-	public static IMemberSerivce getInstance() {
-		if(memberSerivce==null) {
-			memberSerivce=new MemberServiceImpl();
-		}
-		return memberSerivce;
+	@Required
+	@Inject
+	public void setMemeberDAO(IMemberDAO memeberDAO) {
+		this.memeberDAO = memeberDAO;
 	}
 	
 	@Override

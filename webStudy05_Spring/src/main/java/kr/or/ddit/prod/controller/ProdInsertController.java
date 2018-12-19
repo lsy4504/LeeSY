@@ -13,15 +13,10 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,19 +26,19 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.or.ddit.CommonException;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.prod.dao.IOtherDAO;
-import kr.or.ddit.prod.dao.OtherDAOImpl;
 import kr.or.ddit.prod.service.IProdService;
-import kr.or.ddit.prod.service.ProdServiceImpl;
 import kr.or.ddit.vo.ProdVO;
 @Controller
 @RequestMapping("/prod/prodInsert.do")
 public class ProdInsertController {
 	@Inject
+	IProdService service;
+	@Inject
 	WebApplicationContext container;
-	IOtherDAO other=OtherDAOImpl.getInstance();
+	@Inject
+	IOtherDAO other;
 	String prodImagesUrl="/prodImages";
 	File prodImagesfolder;
 	@PostConstruct
@@ -81,7 +76,6 @@ public class ProdInsertController {
 						prod.setProd_img(savename);
 					} 
 			}
-			IProdService service=ProdServiceImpl.getInstance();
 			ServiceResult result= service.createProd(prod);
 			switch (result) {
 			case OK:

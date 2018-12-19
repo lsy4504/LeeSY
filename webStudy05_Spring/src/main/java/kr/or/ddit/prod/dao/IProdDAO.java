@@ -2,6 +2,8 @@ package kr.or.ddit.prod.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import kr.or.ddit.vo.PagingInfoVO;
 import kr.or.ddit.vo.ProdVO;
 
@@ -18,6 +20,7 @@ import kr.or.ddit.vo.ProdVO;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@Repository
 public interface IProdDAO {
 	/**
 	 * 신규 상품 등록

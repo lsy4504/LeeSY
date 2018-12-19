@@ -36,8 +36,7 @@
 <script type="text/javascript">
 $( function() {
 <c:if test="${not empty message }">
-	alert("${reqeust.message}");
-	<c:remove var="message"  scope="session"/>
+	alert("${request.message}");
 </c:if>
 
     $( "[type='date']" ).datepicker({
@@ -88,7 +87,7 @@ $( function() {
 			</c:if>
 		</c:if>
 <%-- 		${sessionScope.authMember } --%>
-		
+<c:set var="mutable" value="true"></c:set>		
 		<c:if test="${mutable }">
 <form name="delForm" action="${pageContext.request.contextPath}/member/memberDelete.do" method="post">
 	<input type="hidden" name="mem_id" value="${member.mem_id}"/>

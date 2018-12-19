@@ -2,7 +2,7 @@ package kr.or.ddit.board.dao;
 
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.stereotype.Repository;
 
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PagingInfoVO;
@@ -20,6 +20,7 @@ import kr.or.ddit.vo.PagingInfoVO;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@Repository
 public interface IBoardDAO {
 	/**
 	 * 게시글 작성
@@ -27,7 +28,7 @@ public interface IBoardDAO {
 	 * @param session TODO
 	 * @return row count
 	 */
-	public int insertBoard(BoardVO board, SqlSession session);
+	public int insertBoard(BoardVO board);
 	/**
 	 * 검색과 페이징 처리를 위해 검색 조건에 맞는 게시글수 조회
 	 * @param pagingVO 검색 조건을 가진 VO
@@ -66,12 +67,12 @@ public interface IBoardDAO {
 	 * @param session TODO
 	 * @return row count
 	 */
-	public int updateBoard(BoardVO board, SqlSession session);
+	public int updateBoard(BoardVO board);
 	/**
 	 * 글 삭제
 	 * @param session TODO
 	 * @param ㅠo_no
 	 * @return row count
 	 */
-	public int deleteBoard(long bo_no, SqlSession session);
+	public int deleteBoard(long bo_no);
 }
