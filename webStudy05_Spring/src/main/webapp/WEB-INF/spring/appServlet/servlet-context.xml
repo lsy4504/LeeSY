@@ -22,6 +22,7 @@
 	<annotation-driven />
 	<!--정적 자원처리  -->
 	<default-servlet-handler/>
+	<resources location="/resources/" mapping="/res/**" cache-period="0"/>
 	<context:component-scan base-package="kr.or.ddit" use-default-filters="false">
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
@@ -43,8 +44,41 @@
 		p:order="1"
 	/>
 	<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"></beans:bean>
+	<beans:bean id="downloadView" class="kr.or.ddit.board.view.DownloadView"></beans:bean>
+	<beans:bean class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
+		p:definitions="classpath:kr/or/ddit/tiles/*-definitions.xml"
+	/>
+	<beans:bean class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
+		p:order="2"
+	/>
 	<!--비슷한 영역을 지원하는 전략을 여러개 등록하는 경우,
 		반드시 우선순위(order)를 설정해야 함.
 	  -->
-	
+	<interceptors>
+	<beans:bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"
+	p:paramName="locale" 
+	/>
+	<interceptor>
+<!-- 		<mapping path="/**"/> -->
+<!-- 		<exclude-mapping path="*.do"/> -->
+	<mapping path="/js/**"/>
+	<mapping path="/css/**/*.css"/>
+		<beans:bean class="org.springframework.web.servlet.mvc.WebContentInterceptor"
+		p:useCacheControlHeader="true"
+		p:useCacheControlNoStore="true"
+		p:useExpiresHeader="true"
+		p:cacheSeconds="0"
+		/>
+	</interceptor>
+	</interceptors>
+	<!--주의 id="messageSource"  -->
+	<beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"
+	p:basenames="kr.or.ddit.msgs.message,kr.or.ddit.msgs.errorMessage" 
+	/>
+	<!--반드시 localeResolver 이걸ㄹ고 합시다...   -->
+	<beans:bean  id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
+	p:cookieName="localeCookie"
+	p:cookiePath="/"
+	p:cookieMaxAge="#{60*60*24*7}"
+	/>
 </beans:beans>

@@ -29,8 +29,7 @@
 	p:typeAliasesPackage="kr.or.ddit.vo"
 	p:mapperLocations="classpath:kr/or/ddit/db/mybatis/mappers/*.xml"
 	/>
-	<mybatis-spring:scan base-package="kr.or.ddit.**.dao"
-	annotation="org.springframework.stereotype.Repository"
+	<mybatis-spring:scan base-package="kr.or.ddit.**.dao" annotation="org.springframework.stereotype.Repository"
 	/>
 
 </beans>

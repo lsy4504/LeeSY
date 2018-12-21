@@ -2,27 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
 <link href="<%=request.getContextPath()%>/css/board.css"
 	rel="stylesheet" type="text/css">
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous">
-<script src="${pageContext.request.contextPath }/js/jquery-3.3.1.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-	integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-	crossorigin="anonymous"></script>
-<script
-	src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-	integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-	crossorigin="anonymous"></script>
 
-	<script src="http://malsup.github.com/jquery.form.js"></script> 
 <script type="text/javascript" src="${pageContext.request.contextPath }/js/replyProcess.js"></script>
 <script type="text/javascript">
 	$.getContextPath = function(){
@@ -68,9 +50,6 @@ $(function() {
 	})
 })
 </script>	
-<title>Insert title here</title>
-</head>
-<body>
 <form action='<c:url value='/board/boardDelete.do'/>' name="deleteForm" method="post" id="ff">
 	<input type="hidden" name="bo_no" value="${board.bo_no }"/> 
 	<input type="hidden" name="bo_pass"/> 
@@ -261,5 +240,3 @@ $(function() {
 	}
 	paging(1);
 </script>
-</body>
-</html>

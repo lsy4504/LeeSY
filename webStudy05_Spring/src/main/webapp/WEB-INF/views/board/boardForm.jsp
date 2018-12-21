@@ -1,24 +1,17 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <c:set var="cPath" value="${pageContext.request.contextPath }"
 	scope="application" />
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script src="${pageContext.request.contextPath }/js/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="${cPath }/js/ckeditor/ckeditor.js"></script>
 
-</head>
 <c:if test="${not empty message}"> 
 <script type="text/javascript">
 	alert("${message}");
 </script>
 </c:if>
-<body>
-	<form method="post" enctype="multipart/form-data" action="" id="form">
+	<form:form method="post" enctype="multipart/form-data" action="" id="form" modelAttribute="board">
 		<table>
 			<tr>
 				<th>제목</th>
@@ -73,7 +66,7 @@
 		<input type="hidden" value="${param.parent }"
 			name='bo_parent'>
 
-	</form>
+	</form:form>
 	<script type="text/javascript">
 	$(".delspan").on("click",function(){
 		alert("들어는오나?")
@@ -107,5 +100,3 @@
 						});
 	</script>
 
-</body>
-</html>

@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,12 +25,12 @@ import kr.or.ddit.vo.FileUploadVO;
 
 @RestController
 public class UploadImageController{
-	String saveFolderUrl = "/boardImages";
+	@Value("#{appInfo.boardImages}")
+	String saveFolderUrl;
+	@Value("#{appInfo.boardImages}")
 	File folder;
 	@PostConstruct
 	public void init() throws IOException{
-		Resource res= container.getResource(saveFolderUrl);
-		folder=res.getFile();
 		if(!folder.exists()) folder.mkdirs();
 	}
 	@Inject

@@ -59,10 +59,28 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+		
+		<!--AOP의존성  -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.13</version>
+		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
+		</dependency>
+		<!--객체 검증 라이브러리 -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.4.2.Final</version>
 		</dependency>
 
 		<!-- View layer 용 -->
@@ -165,11 +183,6 @@
 		</dependency>
 
 		<!-- 객체 검증 용 -->
-		<dependency>
-			<groupId>kr.or.ddit</groupId>
-			<artifactId>myValidator</artifactId>
-			<version>1.0</version>
-		</dependency>
 
 		<!-- XSS(Cross Site Script) 공격 방어용 -->
 		<dependency>
@@ -182,6 +195,17 @@
 					<artifactId>commons-logging</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<!--Tiles 의존성(서버사이드 페이지 모듈화)  -->
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-jsp</artifactId>
+			<version>3.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-extras</artifactId>
+			<version>3.0.8</version>
 		</dependency>
 
 		<!-- 단위 테스트 지원 -->
@@ -197,6 +221,14 @@
 			<version>1.3</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${org.springframework-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+				
 		
 	</dependencies>
 

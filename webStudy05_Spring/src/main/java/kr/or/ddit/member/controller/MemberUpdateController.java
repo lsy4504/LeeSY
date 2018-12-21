@@ -8,21 +8,19 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.member.service.IMemberSerivce;
-import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.validator.GeneralValidator;
-import kr.or.ddit.validator.UpdateGroup;
+import kr.or.ddit.validate.InsertGroup;
+import kr.or.ddit.validate.UpdateGroup;
 import kr.or.ddit.vo.MemberVO;
 @Controller
 public class MemberUpdateController {
@@ -30,19 +28,18 @@ public class MemberUpdateController {
 	IMemberSerivce serivce;
 	
 	@RequestMapping(value="/member/memberUpdate.do",method=RequestMethod.POST)
-	public String process(@ModelAttribute("member")MemberVO member,Model model
+	public String process(@Validated(UpdateGroup.class) @ModelAttribute("member")MemberVO member,
+			BindingResult errors,
+			Model model
 			 ) throws ServletException, IOException {
 
-		model.addAttribute("member", member);
+		
 		
 		
 		String message=null;
 		String gopage="member/memberView";
-		Map<String,List<CharSequence>> errors=new HashMap<>();
-		model.addAttribute("errors", errors);
-		GeneralValidator validator= new GeneralValidator();
-		boolean valid= validator.validate(member, errors, UpdateGroup.class);
-		System.err.println(errors.size());
+		
+		boolean valid=!errors.hasErrors();
 		if(valid){
 				//경로, 이름,
 			

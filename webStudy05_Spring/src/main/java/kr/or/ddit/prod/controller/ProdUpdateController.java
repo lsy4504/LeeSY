@@ -13,9 +13,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.prod.dao.IOtherDAO;
 import kr.or.ddit.prod.service.IProdService;
+import kr.or.ddit.validate.UpdateGroup;
 import kr.or.ddit.vo.ProdVO;
 @Controller
 @RequestMapping("/prod/prodUpdate.do")
@@ -37,8 +41,8 @@ public class ProdUpdateController{
 	IProdService service;
 	@Inject
 	IOtherDAO other;
-
-	String prodImagesUrl="/prodImages";
+	@Value("#{appInfo['prodImages']}")
+	String prodImagesUrl;
 	File prodImagesfolder;
 	@PostConstruct
 	public void init() throws IOException{
@@ -52,13 +56,14 @@ public class ProdUpdateController{
 		return lprodList;
 	}
 		@RequestMapping(method=RequestMethod.POST)
-		public String doPost(@ModelAttribute("prod")ProdVO prod,@RequestPart(required=false)MultipartFile prod_image,Model model) throws IOException {
-			Map<String, String> errors=new HashMap<>();
-			model.addAttribute("errors", errors);
+		public String doPost(@Validated(UpdateGroup.class) @ModelAttribute("prod")ProdVO prod
+				,Errors errors
+				,@RequestPart(required=false)MultipartFile prod_image,Model model) throws IOException {
 			String message=null;
 			String view=null;
+			view="prod/prodForm";
 				
-			boolean res=valid(prod, errors);
+			boolean res=!errors.hasErrors();
 			if(res) {
 					 if(prod_image!=null && StringUtils.isNotBlank(prod_image.getOriginalFilename())) {
 						 String savename=UUID.randomUUID().toString();
@@ -77,7 +82,7 @@ public class ProdUpdateController{
 					break;
 
 				default:
-					view="/prod/prodForm";
+					view="prod/prodForm";
 					break;
 				}
 				
@@ -100,48 +105,6 @@ public class ProdUpdateController{
 			
 			return "prod/prodForm";
 		}
-		private boolean valid(ProdVO prod, Map<String, String> errors) {
-			boolean valid=true;
-			if(StringUtils.isBlank(prod.getProd_id())) {
-				valid=false;
-			}
-			if(StringUtils.isBlank(prod.getProd_name())){
-			valid=false;
-			errors.put("prod_name", ">상품명 미입력 .... <");
-			}
-			
-			if(StringUtils.isBlank(prod.getProd_buyer())){
-			valid=false;
-			errors.put("prod_buyer", ">판매자 미입력 .... <");
-			}
-			if(prod.getProd_cost()==null){
-			valid=false;
-			errors.put("prod_cost", ">매입가 미입력 .... <");
-			}
-			if(prod.getProd_price()==null){
-			valid=false;
-			errors.put("prod_price", ">판매가 미입력 .... <");
-			}
-			if(prod.getProd_sale()==null){
-			valid=false;
-			errors.put("prod_sale", ">특가 미입력 .... <");
-			}
-			if(StringUtils.isBlank(prod.getProd_outline())){
-			valid=false;
-			errors.put("prod_outline", ">상품정보 미입력 .... <");
-			}
-			if(prod.getProd_totalstock()==null){
-			valid=false;
-			errors.put("prod_totalstock", ">토탈스톡 미입력 .... <");
-			}
-			if(prod.getProd_properstock()==null){
-			valid=false;
-			errors.put("prod_properstock", ">프롭스톡 미입력 .... <");
-			}
-	
-			
-			
-			return valid;
-		}
+		
 		
 }

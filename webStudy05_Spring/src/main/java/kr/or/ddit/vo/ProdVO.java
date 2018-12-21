@@ -3,8 +3,14 @@ package kr.or.ddit.vo;
 import java.io.Serializable;
 import java.util.List;
 
-import org.apache.ibatis.type.Alias;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+import org.apache.ibatis.type.Alias;
+import org.hibernate.validator.constraints.NotBlank;
+
+import kr.or.ddit.validate.InsertGroup;
+import kr.or.ddit.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 /**
@@ -34,18 +40,29 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(of= {"prod_id","prod_name"})// 비교대상을 기본키로만 잡음 
 public class ProdVO implements Serializable {
+	@NotBlank(groups=UpdateGroup.class)
 	private String prod_id;
+	@NotBlank
 	private String prod_name;
+	@NotBlank(groups=InsertGroup.class)
 	private String prod_lgu;
+	@NotBlank(groups=InsertGroup.class)
 	private String prod_buyer;
+	@NotNull
 	private Long prod_cost;
+	@NotNull
 	private Long prod_price;
+	@NotNull
 	private Long prod_sale;
+	@NotBlank
 	private String prod_outline;
 	private String prod_detail;
 	private String prod_img;
+	@NotNull
 	private Long prod_totalstock;
+	@Pattern(regexp="[0-9]{4}-([0][1-9]|[1][0-2])-([0][1-9]|[1][0-9]|[2][0-9]|[3][0-1])")
 	private String prod_insdate;
+	@NotNull
 	private Long prod_properstock;
 	private String prod_size;
 	private String prod_color;

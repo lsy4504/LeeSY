@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import static org.hamcrest.Matchers.*;
 
 import org.junit.After;
@@ -11,15 +13,20 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import kr.or.ddit.ServiceResult;
+import kr.or.ddit.TestConfiguration;
 import kr.or.ddit.board.BoardException;
 import kr.or.ddit.board.dao.BoardDAOImplTest;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PagingInfoVO;
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestConfiguration
 public class BoardServiceImplTest {
-	IBoardService service= new BoardServiceImpl();
+	@Inject
+	IBoardService service;
 	BoardVO board;
 	PagingInfoVO<BoardVO> paging;
 	@BeforeClass
@@ -37,7 +44,7 @@ public class BoardServiceImplTest {
 		board=new BoardVO();
 		paging=new PagingInfoVO<>();
 		paging.setSearchType("content");
-		paging.setSearchWord("은대");
+		paging.setSearchWord("크리스탈");
 		board=new BoardVO();
 		board.setBo_no(new Long(171));
 		board.setBo_title("수정 수정 크리스탈");
@@ -71,14 +78,14 @@ public class BoardServiceImplTest {
 			assertNotSame(0, boardList.size());
 			assertThat(boardList.size(), greaterThan(0));
 			BoardVO test= new BoardVO();
-			test.setBo_no((long)171);
-			test.setBoard_writer("김은대");
+			test.setBo_no((long)1087);
+			test.setBoard_writer("아잉이");
 			assertThat(boardList, hasItem(test));
 	}
 
 	@Test
 	public void testRetriveBoard() {
-		BoardVO board= service.retriveBoard(171);
+		BoardVO board= service.retriveBoard(1087);
 		assertNotNull(board);
 //		assertNull("조회된 글은 null 이 아닌거같은데?",board);
 		assertThat(board, instanceOf(BoardVO.class));
@@ -87,7 +94,7 @@ public class BoardServiceImplTest {
 
 	@Test
 	public void testModifyBoard() {
-		board.setBo_no((long)171);
+		board.setBo_no((long)1087);
 		ServiceResult res=service.modifyBoard(board);
 		assertThat(res, equalTo(ServiceResult.INVALIDPASSWORD));
 	}
@@ -100,7 +107,7 @@ public class BoardServiceImplTest {
 
 	@Test
 	public void testRemoveBoard() {
-		board.setBo_no((long)160);
+		board.setBo_no((long)1087);
 		board.setBo_pass("3ngvoasbn");
 		ServiceResult res=service.removeBoard(board);
 		System.out.println("뭐야"+board.getBo_no());
@@ -112,9 +119,6 @@ public class BoardServiceImplTest {
 		service.downLoadPds((long)177);
 	}
 
-	@Test
-	public void testBoomUp() {
-		fail("Not yet implemented");
-	}
+
 
 }

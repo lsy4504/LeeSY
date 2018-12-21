@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Pattern;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.Alias;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.or.ddit.validator.rules.constraints.NotBlank;
+import kr.or.ddit.validate.UpdateGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,15 +23,19 @@ import lombok.NoArgsConstructor;
 @Alias("boardVO")
 public class BoardVO implements Serializable {
 	private Long rowNo;
+	@NotBlank(groups=UpdateGroup.class)
 	private Long bo_no;
-	@NotBlank(message = "작성자는 필수에요..")
+	@NotBlank()
 	private String board_writer;
-	@NotBlank(message = "비밀번호도 필수에요...")
+	@NotBlank()
 	private String bo_pass;
+	@NotBlank()
 	private String bo_ip;
 	private String bo_mail;
+	@NotBlank()
 	private String bo_title;
 	private String bo_content;
+	@Pattern(regexp="[0-9]{4}-([0][1-9]|[1][0-2])-([0][1-9]|[1][0-9]|[2][0-9]|[3][0-1])")
 	private String bo_date;
 	private Long bo_hit;
 	private Long bo_rcmd;
@@ -54,6 +61,7 @@ public class BoardVO implements Serializable {
 				pdsList.add(new PdsVO(item));
 			}
 		}
+		if(pdsList.size()>0)
 		this.pdsList = pdsList;
 		
 	}

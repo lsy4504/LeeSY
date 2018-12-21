@@ -3,8 +3,6 @@ package kr.or.ddit.member.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -15,18 +13,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.member.service.IMemberSerivce;
-import kr.or.ddit.member.service.MemberServiceImpl;
-import kr.or.ddit.validator.GeneralValidator;
-import kr.or.ddit.validator.InsertGroup;
+import kr.or.ddit.validate.InsertGroup;
 import kr.or.ddit.vo.MemberVO;
 @Controller
 @RequestMapping(value="/member/memberInsert.do")
@@ -39,19 +34,29 @@ public class MemberInsertController {
 		String view="member/memberForm";
 		return view;
 	}
+/*	JSR-303방식의 객체 검증 모델
+	1. javax.validation 의존성추가(hibernate-validator)
+	2. 검증 대상이 되는 command object 의 타입(class) 에 검증 룰을 의미하는 어노테이션 적용.
+		ex) memberVO: NotBlank, NotNull, Length...
+	3. 핸들러 메소드의 아규먼트로 선언된 command object에 
+		@Validated,@Valid 등을 사용하여, 객체 검증이 수행되도록 설정.
+	4.**검증 결과를 캡슐화한 Errors(BindingResult)를 반드시, 검증 대상 커맨드 오브젝트 다음에 선언
+	5.핸들러 메소드 내부에서 검증 결과를 확인
+	6.뷰 레이어에서 해당 검ㅈ으 결과 메시지를 랜더링
+		spring-form 태그 라이브러리 이용. ex)form:errors path="모델명.프로퍼티명"*/
 	@RequestMapping(method=RequestMethod.POST)
-	public String doPost(@ModelAttribute("member")MemberVO member,
-			
+	public String doPost(@Validated(value=InsertGroup.class) @ModelAttribute("member")MemberVO member,
+			Errors errors,
 			Model model,HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		model.addAttribute("member", member);
 		
 		String message=null;
 		String gopage="member/memberForm";
-		Map<String,List<CharSequence>> errors=new HashMap<>();
-		model.addAttribute("errors", errors);
-		GeneralValidator validator=new GeneralValidator();
-		boolean valid= validator.validate(member, errors, InsertGroup.class);
-		System.err.println(errors.size());
+//		Map<String,List<CharSequence>> errors=new HashMap<>();
+//		model.addAttribute("errors", errors);
+//		GeneralValidator validator=new GeneralValidator();
+//		boolean valid= validator.validate(member, errors, InsertGroup.class);
+		boolean valid=!errors.hasErrors();
+		System.out.println(valid);
 		if(valid){
 			ServiceResult result=serivce.registMember(member);
 			switch(result){

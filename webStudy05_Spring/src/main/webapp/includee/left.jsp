@@ -21,7 +21,11 @@
 				${user.mem_name }<br>			
 			</c:forEach>
 		</li>
-		
+		<c:forEach items="${menuList }"  var="menuVO">
+			<li>
+				<a href="<c:url value='${menuVO.menuUrl }' />">${menuVO.menuText }</a>
+			</li>
+		</c:forEach>
 	
 	</ul>
 	

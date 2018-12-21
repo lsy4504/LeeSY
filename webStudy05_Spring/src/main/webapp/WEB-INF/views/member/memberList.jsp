@@ -1,22 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">	
-  <script src="${pageContext.request.contextPath }/js/jquery-3.3.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<%--
-	PagingInfoVO pagingVO= (PagingInfoVO)request.getAttribute("pagingVO");
-	List<MemberVO> memberList=pagingVO.getDataList();
---%>
   <script type="text/javascript">
   function ${pagingVO.funcName}(page) {
 		document.searchForm.page.value=page;
@@ -24,10 +10,9 @@
 	};
   	
   </script>
-<title>member/memberList.jsp</title>
-</head>
-<body>
+
 	<h4>회원 목록</h4>
+		
 <input type="button" class="button" value="신규등록"
 	onclick="location.href='${pageContext.request.contextPath }/member/memberInsert.do'"
 />
@@ -36,12 +21,12 @@
 	<table class="table">
 		<thead class="thead-dark">
 		<tr  >
-			<th>회원아이딬</th>
-			<th>회원명</th>
-			<th>주소</th>
-			<th>휴대폰</th>
-			<th>이메일</th>
-			<th>마일리지</th>
+			<th><spring:message code="member.mem_id" /> </th>
+			<th><spring:message code="member.mem_name" /></th>
+			<th><spring:message code="member.mem_address" /></th>
+			<th><spring:message code="member.mem_hp" /></th>
+			<th><spring:message code="member.mem_mail" /></th>
+			<th><spring:message code="member.mem_mileage" /></th>
 		</tr>
 		 </thead>
 		 <tbody>
@@ -53,7 +38,8 @@
 		 				<c:param name="who" value="${member.mem_id }"></c:param>
 		 			</c:url>
 		 			<td>${member.mem_id }</td>
-		 			<td><a href="${viewURL}">${member.mem_id }</a></td>
+		 			<spring:message code="member.mem_title" arguments="${member.mem_id },${member.mem_mileage } " var="mem_title" />
+		 			<td><a href="${viewURL}" title="${mem_title }">${member.mem_id }</a></td>
 		 			<td>${member.address }</td>
 		 			<td>${member.mem_hp }</td>
 		 			<td>${member.mem_mail }</td>
@@ -94,5 +80,3 @@
 		 </tfoot>
 	</table> 
 	</div>
-</body>
-</html>

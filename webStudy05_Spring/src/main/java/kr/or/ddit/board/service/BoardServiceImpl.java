@@ -5,11 +5,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.BoardException;
@@ -24,7 +26,10 @@ public class BoardServiceImpl implements IBoardService {
 	IBoardDAO boardDAO;
 	@Inject
 	IPdsDAO pdsDAO;
-	File saveFolder = new File("d:/boardFiles");
+	@Value("#{appInfo.pdsPath}")
+	File saveFolder;
+	@PostConstruct
+	public void init()
 	{
 	if (!saveFolder.exists())
 		saveFolder.mkdirs();
@@ -33,7 +38,7 @@ public class BoardServiceImpl implements IBoardService {
 		int rowCnt = 0;
 		List<PdsVO> pdsList = board.getPdsList();
 		
-		if (pdsList != null) {
+		if (pdsList != null && pdsList.size()>0) {
 //			if(1==1)
 //			throw new RuntimeException("트랜잭션 관리 여부 확인을 위한 강제 예외");
 
@@ -64,12 +69,13 @@ public class BoardServiceImpl implements IBoardService {
 
 		return rowCnt;
 	}
-
+	@Transactional
 	@Override
 	public ServiceResult createBoard(BoardVO board) {
 			int rowCnt = boardDAO.insertBoard(board);
 			int check = 1;
 			if (rowCnt > 0) {
+				
 				if (board.getPdsList() != null)
 					check += board.getPdsList().size();
 				rowCnt += processFiles(board);

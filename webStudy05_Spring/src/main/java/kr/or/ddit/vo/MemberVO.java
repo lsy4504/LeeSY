@@ -9,15 +9,18 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
+import javax.validation.constraints.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.Alias;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.or.ddit.validator.InsertGroup;
-import kr.or.ddit.validator.rules.constraints.Length;
-import kr.or.ddit.validator.rules.constraints.NotBlank;
+import kr.or.ddit.validate.InsertGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -28,28 +31,32 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode(of={"mem_id","mem_regno1","mem_regno2"})
 public class MemberVO  implements Serializable, HttpSessionBindingListener{
-	@NotBlank(message="아이디 필수에용")
+	@NotBlank()
 	private String mem_id;
-	@NotBlank(message="비밀번호 입력해")
+	@NotBlank
 	@Length(min=4,max=8)
 	private String mem_pass;
-	@NotBlank(message="이름 입력해",groups=InsertGroup.class)
+	@NotBlank
 	private String mem_name;
 	@NotBlank(groups=InsertGroup.class)
+	@Length(min=6,max=6,groups=InsertGroup.class)
 	private String mem_regno1;
 	@NotBlank(groups=InsertGroup.class)
+	@Length(min=7,max=7,groups=InsertGroup.class)
 	private String mem_regno2;
 	private String mem_bir;
 	@NotBlank
+	@Pattern(regexp="\\d{3}-[0-9]{3}")
 	private String mem_zip;
 	@NotBlank
 	private String mem_add1;
 	@NotBlank
 	private String mem_add2;
+	@NotBlank
 	private String mem_hometel;
 	private String mem_comtel;
-	@NotBlank
 	private String mem_hp;
+	@Email
 	private String mem_mail;
 	private String mem_job;
 	private String mem_like;

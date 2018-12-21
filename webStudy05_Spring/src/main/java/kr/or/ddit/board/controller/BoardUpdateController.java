@@ -16,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.ServiceResult;
 import kr.or.ddit.board.service.IBoardService;
-import kr.or.ddit.validator.GeneralValidator;
-import kr.or.ddit.validator.UpdateGroup;
 import kr.or.ddit.vo.BoardVO;
 @Controller
 @RequestMapping(value="/board/boardUpdate.do")
@@ -35,8 +33,9 @@ public class BoardUpdateController {
 	@RequestMapping(method=RequestMethod.POST)
 	public String postPrecess(BoardVO board,Model model,@RequestPart(name="bo_file",required=false) MultipartFile[] bo_file) {
 		Map<String, List<CharSequence>> errors=new HashMap<>();
-		GeneralValidator validator=new GeneralValidator();
-		boolean valid=validator.validate(board, errors, UpdateGroup.class);
+//		GeneralValidator validator=new GeneralValidator();
+//		boolean valid=validator.validate(board, errors, UpdateGroup.class);
+		boolean valid=true;
 		String view="board/boardForm";
 		if(valid) {
 			ServiceResult res= service.modifyBoard(board);

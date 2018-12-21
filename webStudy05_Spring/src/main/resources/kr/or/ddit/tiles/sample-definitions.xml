@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+<!-- definition name==논리적인 view namez -->
+  <definition name="parent" template="/WEB-INF/views/template.jsp">
+  	<put-attribute name="preScript" value="/includee/preScript.jsp" />
+    <put-attribute name="title" value="Company205" />
+    <put-attribute name="top" value="/includee/header.jsp" />
+    <put-attribute name="left" value="/includee/left.jsp" />
+    <put-attribute name="footer" value="/includee/footer.jsp" />
+  </definition>
+  <definition name="member/*" extends="parent" template="/WEB-INF/views/template.jsp" preparer="kr.or.ddit.member.preparer.MemberViewPreparer">
+    <put-attribute name="body" value="/WEB-INF/views/member/{1}.jsp" />
+  </definition>
+  <definition name="prod/*" extends="parent" template="/WEB-INF/views/template.jsp">
+    <put-attribute name="body" value="/WEB-INF/views/prod/{1}.jsp" />
+  </definition>
+  <definition name="board/*" extends="parent" template="/WEB-INF/views/template.jsp">
+    <put-attribute name="body" value="/WEB-INF/views/board/{1}.jsp" />
+  </definition>
+</tiles-definitions>
