@@ -12,9 +12,24 @@
 		<config>src/main/webapp/WEB-INF/spring/datasource-context.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/appServlet/websocket-context.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/aop-context.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/scheduler-context.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/batch-context.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
 	<configSets>
+		<configSet>
+			<name><![CDATA[rootContainer_webStudy05]]></name>
+			<allowBeanDefinitionOverriding>true</allowBeanDefinitionOverriding>
+			<incomplete>false</incomplete>
+			<configs>
+				<config>src/main/webapp/WEB-INF/spring/aop-context.xml</config>
+				<config>src/main/webapp/WEB-INF/spring/datasource-context.xml</config>
+				<config>src/main/webapp/WEB-INF/spring/root-context.xml</config>
+				<config>src/main/webapp/WEB-INF/spring/scheduler-context.xml</config>
+			</configs>
+			<profiles>
+			</profiles>
+		</configSet>
 	</configSets>
 </beansProjectDescription>

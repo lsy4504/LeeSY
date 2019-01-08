@@ -1,5 +1,8 @@
 package kr.or.ddit;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * @author lsy
  * @since 2018. 11. 21.
@@ -13,6 +16,7 @@ package kr.or.ddit;
  * Copyright (c) 2018 by DDIT All right reserved
  * </pre>
  */
+@ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
 public class CommonException extends RuntimeException {
 
 	public CommonException() {

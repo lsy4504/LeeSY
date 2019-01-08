@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<task:annotation-driven/>
+	<bean id="methodInvokingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"
+		p:targetObject-ref="registOut"
+		p:targetMethod="executeJobWithEveryWeek"
+	/> 
+	<!--POPO 형식의 경우 MethodInvokingJobDetailFactoryBean을 사용해야함.  -->
+	<bean  id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"
+		p:cronExpression="0 34 16 ? * FRI"
+		p:jobDetail-ref="methodInvokingJobDetail"
+	/>
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<array>
+				<ref bean="cronTrigger"/>
+			</array>
+		</property>
+	</bean>
+	
+</beans>

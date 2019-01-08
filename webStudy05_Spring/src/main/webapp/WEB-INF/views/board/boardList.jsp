@@ -15,7 +15,18 @@
 		$("[name='searchForm']").submit();
   	}
  	$(function() {
- 		
+ 		$.ajax({
+			url : "",
+			method : "",
+			data : "",
+			dataType : "",
+			success : function(resp) {
+
+			},
+			error : function(resp) {
+
+			}
+		});
  		var searchForm=$('#searchForm');
         // wait for the DOM to be loaded
         $(window).on("popstate",function(event){

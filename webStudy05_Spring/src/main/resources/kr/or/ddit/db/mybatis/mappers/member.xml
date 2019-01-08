@@ -94,23 +94,49 @@
 		)
 	</insert>
 	<update id="updateMember" parameterType="memberVO">
-		update member set
+		update member
+		<set>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_name)">
 		MEM_NAME=#{mem_name},
+		</if> 
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_zip)">
 		MEM_ZIP=#{mem_zip},
-		MEM_ADD1=#{mem_add1},
-		MEM_ADD2=#{mem_add2},
-		MEM_HOMETEL=#{mem_hometel},
-		MEM_COMTEL=#{mem_comtel},
-		MEM_HP=#{mem_hp},
-		MEM_MAIL=#{mem_mail},
-		MEM_JOB=#{mem_job},
-		MEM_LIKE=#{mem_like},
-		MEM_MEMORIAL=#{mem_memorial},
-		MEM_MEMORIALDAY=TO_DATE(#{mem_memorialday},'YYYY-MM-DD')
-		<if test="mem_img!=null">
-		,MEM_IMG=#{mem_img,jdbcType=BLOB}
 		</if>
-		where MEM_ID=#{mem_id}
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_add1)">
+		MEM_ADD1=#{mem_add1},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_add2)">
+		MEM_ADD2=#{mem_add2},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_hometel)">
+		MEM_HOMETEL=#{mem_hometel},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_comtel)">
+		MEM_COMTEL=#{mem_comtel},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_hp)">
+		MEM_HP=#{mem_hp},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_mail)">
+		MEM_MAIL=#{mem_mail},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_job)">
+		MEM_JOB=#{mem_job},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_like)">
+		MEM_LIKE=#{mem_like},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_memorial)">
+		MEM_MEMORIAL=#{mem_memorial},
+		</if>
+		<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(mem_memorialday)">
+		MEM_MEMORIALDAY=TO_DATE(#{mem_memorialday},'YYYY-MM-DD'),
+		</if>
+		<if test="mem_img!=null">
+		MEM_IMG=#{mem_img,jdbcType=BLOB}
+		</if>
+		</set>
+		where MEM_ID=#{mem_id,jdbcType=VARCHAR}
 
 
 	</update>

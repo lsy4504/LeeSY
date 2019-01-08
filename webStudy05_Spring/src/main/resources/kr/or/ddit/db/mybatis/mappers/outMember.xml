@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.member.dao.IOutMemberDAO">
+<!-- 	<delete id="deleteCartByDeleteMember">
+		DELETE FROM cart
+		where cart_member in(SELECT mem_id
+		FROM MEMBER
+		WHERE mem_delete='Y')
+	</delete>
+	<delete id="deleteMemberByDelFlag">
+		DELETE FROM MEMBER
+		WHERE mem_delete='Y'
+	</delete> -->
+	<delete id="prodel" statementType="CALLABLE">
+		{
+			call mem_cart_delete()
+		}
+	</delete>
+
+</mapper>

@@ -45,8 +45,6 @@
 		 			<td>${member.mem_mail }</td>
 		 			<td>${member.mem_mileage }</td>
 		 			</tr>
-				
-				
 				</c:forEach>
 			 </c:if>
 			<c:if test="${empty memberList }">

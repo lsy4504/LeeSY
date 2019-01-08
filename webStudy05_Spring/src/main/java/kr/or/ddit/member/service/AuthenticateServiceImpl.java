@@ -34,3 +34,4 @@ public class AuthenticateServiceImpl implements IAuthenticateService{
 		return result;
 	}
 }
+

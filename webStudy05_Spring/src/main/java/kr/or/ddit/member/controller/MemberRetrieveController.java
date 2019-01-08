@@ -26,7 +26,7 @@ public class MemberRetrieveController{
 	IMemberSerivce serivce;
 	
 	@RequestMapping("memberList.do")
-	public String process(@RequestParam(required=false) String searchWord,@RequestParam(required=false)String searchType
+	public String MemberList(@RequestParam(required=false) String searchWord,@RequestParam(required=false)String searchType
 			,@RequestParam(name="page",required=false,defaultValue="1")int currentPage,Model model
 			) {
 		
@@ -52,7 +52,7 @@ public class MemberRetrieveController{
 		return view;
 	}
 	@RequestMapping("memberView.do")
-	public ModelAndView process(@RequestParam(name="who",required=true) String mem_id) {
+	public ModelAndView memberView(@RequestParam(name="who",required=true) String mem_id) {
 		String view = "member/memberView";
 		 MemberVO member = serivce.retrieveMember(mem_id);
 		ModelAndView mav= new ModelAndView();

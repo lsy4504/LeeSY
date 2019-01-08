@@ -1,18 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>kr.or.ddit</groupId>
-	<artifactId>webStudy05_Spring</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<groupId>kr.or.ddit</groupId><!-- 프로젝트를 생성한 조직 또는 그룹명으로 보통 URL의 역순으로 지정한다 -->
+	<artifactId>webStudy05_Spring</artifactId><!-- 프로젝트에서 생성되는 기본 아티팩트의 고유 이름 -->
+	<version>0.0.1-SNAPSHOT</version><!-- SNAPSHOT이 붙으면 아직 개발단계라는 의미 -->
+	<packaging>war</packaging><!-- jar, war, ear, pom등 패키지 유형을 나타냄 -->
 	<properties>
+<!-- 	pom.xml에서 중복해서 사용되는 설정(상수)값들을 지정해놓는 부분 -->
+<!-- 	(java.version에 1.8을 적용하고 다른위치에서 ${java.version}이라고 쓰면 1.8이라고 쓴것과 같다) -->
 		<java-version>1.8</java-version>
 		<org.springframework-version>4.3.20.RELEASE</org.springframework-version>
 		<log4j-version>2.11.1</log4j-version>
+		<org.slf4j-version>1.7.25</org.slf4j-version>
 	</properties>
 
 	<repositories>
+	<!-- 빌드할 때 접근할 저장소의 위치를 지정할 수 있다. 기본적으로 메이븐 중앙 저장소인 http://repo1.maven.org/maven2로 지정되어 있다. -->
 		<repository>
+		<!-- 의존성을 다운로드 받을 위치의 repository -->
 			<id>oracle</id>
 			<name>ORACLE JDBC Repository</name>
 			<url>http://maven.jahia.org/maven2</url>
@@ -29,9 +34,21 @@
 					<target>${java-version}</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<url>http://192.168.205.11/manager/text</url>
+					<username>admin</username>
+					<password>java</password>
+					<charset>UTF-8</charset>
+					<path>/LSY</path>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
+	<dependencies><!-- 의존성 라이브러리 정보를 포함한다 -->
 		<!-- 스프링 모듈 의존성 -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -43,6 +60,11 @@
 					<groupId>commons-logging</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -60,7 +82,19 @@
 			<version>${org.springframework-version}</version>
 		</dependency>
 		
-		<!--AOP의존성  -->
+		<dependency>
+			<groupId>org.springframework.batch</groupId>
+			<artifactId>spring-batch-core</artifactId>
+			<version>3.0.9.RELEASE</version>
+		</dependency>
+		<!--spring quartz 연동  -->
+			<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+
+		<!--AOP의존성 -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
@@ -97,10 +131,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+
 		<!-- commons 계열 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -159,6 +200,11 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${log4j-version}</version>
 		</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${org.slf4j-version}</version>
+			</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
@@ -167,7 +213,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.25</version>
+			<version>${org.slf4j-version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.lazyluke</groupId>
@@ -196,7 +242,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--Tiles 의존성(서버사이드 페이지 모듈화)  -->
+		<!--Tiles 의존성(서버사이드 페이지 모듈화) -->
 		<dependency>
 			<groupId>org.apache.tiles</groupId>
 			<artifactId>tiles-jsp</artifactId>
@@ -228,8 +274,22 @@
 			<scope>test</scope>
 		</dependency>
 
-				
-		
+
+
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 
